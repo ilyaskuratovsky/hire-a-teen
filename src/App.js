@@ -13,9 +13,9 @@ function App() {
     {
       title: "Babysitting",
       subtitle: "",
-      formTitle: "Babysitting Request",
+      formTitle: "Babysitter",
       formFields: [
-        { name: "name", label: "Name", type: "text", order: 1 },
+        { name: "name", label: "Your Name", type: "text", order: 1 },
         { name: "address", label: "Address", type: "address", order: 2 },
         { name: "email", label: "Email Address", type: "email", order: 3 },
         {
@@ -57,9 +57,41 @@ function App() {
       subtitle: "",
       formTitle: "Dog Walking/Pet Sitting Request",
       formFields: [
-        { name: "address", label: "Address", type: "address", order: 1 },
-        { name: "name", label: "Name", type: "text", order: 2 },
-        { name: "when", label: "When", type: "date_time", order: 3 },
+        { name: "name", label: "Your Name", type: "text", order: 1 },
+        { name: "address", label: "Address", type: "address", order: 2 },
+        { name: "email", label: "Email Address", type: "email", order: 3 },
+        {
+          name: "phone",
+          label: "Phone Number",
+          type: "tel",
+          order: 4,
+          optional: true,
+        },
+        {
+          name: "preferred_contact",
+          label: "Preferred Way to Contact",
+          type: "checkbox_group",
+          options: [
+            { value: "email", label: "Email" },
+            { value: "phone", label: "Phone" },
+            { value: "text", label: "Text" },
+          ],
+          order: 5,
+        },
+        {
+          name: "when",
+          label: "When",
+          type: "date_time",
+          order: 6,
+          optional: true,
+        },
+        {
+          name: "notes",
+          label: "Notes",
+          type: "notes",
+          optional: true,
+          order: 7,
+        },
       ],
     },
     {
@@ -67,9 +99,20 @@ function App() {
       subtitle: "",
       formTitle: "Academic Tutoring Request",
       formFields: [
-        { name: "address", label: "Address", type: "address", order: 1 },
-        { name: "name", label: "Name", type: "text", order: 2 },
-        { name: "when", label: "When", type: "date_time", order: 3 },
+        { name: "name", label: "Your Name", type: "text", order: 1 },
+        { name: "address", label: "Address", type: "address", order: 2 },
+        {
+          name: "subject",
+          label: "Subject",
+          type: "dropdown",
+          order: 3,
+          placeholder: "Choose a subject",
+          options: [
+            { value: "math", label: "Math" },
+            { value: "science", label: "Science" },
+            { value: "english", label: "English" },
+          ],
+        },
       ],
     },
     {
@@ -102,6 +145,7 @@ function App() {
         { name: "when", label: "When", type: "date_time", order: 3 },
       ],
     },
+    /*
     {
       title: "Snow Shoveling",
       subtitle: "",
@@ -112,6 +156,7 @@ function App() {
         { name: "when", label: "When", type: "date_time", order: 3 },
       ],
     },
+    */
     {
       title: "Car Detailing",
       subtitle: "",
@@ -207,12 +252,12 @@ function App() {
             textShadow: "0 2px 12px rgba(79,140,255,0.15)",
           }}
         >
-          Greenwich Hire-A-Teen
+          Need a helping hand this summer? Hire a local Greenwich teen.
         </h1>
         <div
           style={{
             maxWidth: 700,
-            margin: "0 auto 32px auto",
+            margin: "0 auto 0px auto",
             textAlign: "center",
             background: "rgba(56,161,255,0.10)",
             borderRadius: 18,
@@ -306,6 +351,7 @@ function App() {
             margin: "40px 0",
             justifyItems: "center",
             alignItems: "center",
+            justifyContent: "center", // This ensures centering when not all columns are filled
             transition: "grid-template-columns 0.2s",
           }}
         >
@@ -426,7 +472,33 @@ function App() {
                         </span>
                       )}
                     </label>
-                    {field.type === "address" || field.name === "notes" ? (
+                    {field.type === "dropdown" ? (
+                      <select
+                        name={field.name}
+                        value={formValues[field.name] || ""}
+                        onChange={handleChange}
+                        style={{
+                          width: "100%",
+                          fontSize: 16,
+                          padding: "8px 6px",
+                          borderRadius: 6,
+                          border: "1px solid #bbb",
+                          background: "#fff",
+                          color: formValues[field.name] ? "#222" : "#888",
+                        }}
+                        required={!field.optional}
+                      >
+                        <option value="" disabled>
+                          {field.placeholder || "Select an option"}
+                        </option>
+                        {field.options &&
+                          field.options.map((opt) => (
+                            <option key={opt.value} value={opt.value}>
+                              {opt.label}
+                            </option>
+                          ))}
+                      </select>
+                    ) : field.type === "address" || field.name === "notes" ? (
                       <textarea
                         name={field.name}
                         value={formValues[field.name] || ""}
