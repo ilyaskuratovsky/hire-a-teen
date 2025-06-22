@@ -20,9 +20,9 @@ function App() {
         { name: "when", label: "When (Date/Time)", type: "text", order: 3 },
         {
           name: "notes",
-          label: "Notes (Multiple Children, Special Circumstances etc.)",
+          label: "Additional Notes",
           type: "notes",
-          order: 3,
+          order: 4,
         },
       ],
     },
@@ -138,17 +138,30 @@ function App() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    const message = activeForm.formFields
+      .slice()
+      .sort((a, b) => a.order - b.order)
+      .map(
+        (field) =>
+          `${field.label}: ${formValues[field.name] ? formValues[field.name] : ""}`
+      )
+      .join("\n");
+
     // Prepare template params for EmailJS
     const templateParams = {
-      form_type: activeForm.formTitle,
+      type: activeForm.title,
+      message,
       ...formValues,
     };
 
     // Replace these with your EmailJS values
-    const SERVICE_ID = "service_yyupiua";
-    const TEMPLATE_ID = "template_bscjeem";
-    const USER_ID = "K_WhNfwPe38QSV54i";
-
+    //const SERVICE_ID = "service_yyupiua";
+    //const TEMPLATE_ID = "template_0xbtn68";
+    //const TEMPLATE_ID = "template_bscjeem";
+    //const USER_ID = "K_WhNfwPe38QSV54i";
+    const SERVICE_ID = "service_9jynhfj";
+    const TEMPLATE_ID = "template_7c6kzgr";
+    const USER_ID = "fbF9XXilrLgIe1NID";
     emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams, USER_ID).then(
       (result) => {
         setShowModal(false);
