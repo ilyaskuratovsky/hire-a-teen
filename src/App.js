@@ -12,48 +12,64 @@ function App() {
   const buttons = [
     {
       title: "Babysitting",
-      subtitle: "Care for kids in your area",
+      subtitle: "",
       formTitle: "Babysitting Request",
       formFields: [
-        { name: "address", label: "Address", type: "address", order: 2 },
         { name: "name", label: "Name", type: "text", order: 1 },
-        { name: "when", label: "When (Date/Time)", type: "text", order: 3 },
+        { name: "address", label: "Address", type: "address", order: 2 },
+        { name: "email", label: "Email Address", type: "email", order: 3 },
+        {
+          name: "phone",
+          label: "Phone Number",
+          type: "tel",
+          order: 4,
+          optional: true,
+        },
+        {
+          name: "preferred_contact",
+          label: "Preferred Way to Contact",
+          type: "checkbox_group",
+          options: [
+            { value: "email", label: "Email" },
+            { value: "phone", label: "Phone" },
+            { value: "text", label: "Text" },
+          ],
+          order: 5,
+        },
+        {
+          name: "when",
+          label: "When",
+          type: "date_time",
+          order: 6,
+          optional: true,
+        },
         {
           name: "notes",
-          label: "Additional Notes",
+          label: "Notes",
           type: "notes",
-          order: 4,
+          optional: true,
+          order: 7,
         },
       ],
     },
     {
       title: "Dog Walking/Pet Sitting",
-      subtitle: "Help with pets",
+      subtitle: "",
       formTitle: "Dog Walking/Pet Sitting Request",
       formFields: [
         { name: "address", label: "Address", type: "address", order: 1 },
         { name: "name", label: "Name", type: "text", order: 2 },
-        { name: "when", label: "When", type: "text", order: 3 },
-      ],
-    },
-    {
-      title: "Sports Lessons",
-      subtitle: "Teach or coach sports",
-      formTitle: "Sports Lessons Request",
-      formFields: [
-        { name: "address", label: "Address", type: "address", order: 1 },
-        { name: "name", label: "Name", type: "text", order: 2 },
-        { name: "when", label: "When", type: "text", order: 3 },
+        { name: "when", label: "When", type: "date_time", order: 3 },
       ],
     },
     {
       title: "Academic Tutoring",
-      subtitle: "Help with schoolwork",
+      subtitle: "",
       formTitle: "Academic Tutoring Request",
       formFields: [
         { name: "address", label: "Address", type: "address", order: 1 },
         { name: "name", label: "Name", type: "text", order: 2 },
-        { name: "when", label: "When", type: "text", order: 3 },
+        { name: "when", label: "When", type: "date_time", order: 3 },
       ],
     },
     {
@@ -63,7 +79,7 @@ function App() {
       formFields: [
         { name: "address", label: "Address", type: "address", order: 1 },
         { name: "name", label: "Name", type: "text", order: 2 },
-        { name: "when", label: "When", type: "text", order: 3 },
+        { name: "when", label: "When", type: "date_time", order: 3 },
       ],
     },
     {
@@ -73,37 +89,37 @@ function App() {
       formFields: [
         { name: "address", label: "Address", type: "address", order: 1 },
         { name: "name", label: "Name", type: "text", order: 2 },
-        { name: "when", label: "When", type: "text", order: 3 },
+        { name: "when", label: "When", type: "date_time", order: 3 },
+      ],
+    },
+    {
+      title: "Housework",
+      subtitle: "Cleaning, moving, general help",
+      formTitle: "Yard Work Request",
+      formFields: [
+        { name: "address", label: "Address", type: "address", order: 1 },
+        { name: "name", label: "Name", type: "text", order: 2 },
+        { name: "when", label: "When", type: "date_time", order: 3 },
       ],
     },
     {
       title: "Snow Shoveling",
-      subtitle: "Clear driveways & walks",
+      subtitle: "",
       formTitle: "Snow Shoveling Request",
       formFields: [
         { name: "address", label: "Address", type: "address", order: 1 },
         { name: "name", label: "Name", type: "text", order: 2 },
-        { name: "when", label: "When", type: "text", order: 3 },
+        { name: "when", label: "When", type: "date_time", order: 3 },
       ],
     },
     {
       title: "Car Detailing",
-      subtitle: "Clean and detail vehicles",
+      subtitle: "",
       formTitle: "Car Detailing Request",
       formFields: [
         { name: "address", label: "Address", type: "address", order: 1 },
         { name: "name", label: "Name", type: "text", order: 2 },
-        { name: "when", label: "When", type: "text", order: 3 },
-      ],
-    },
-    {
-      title: "Photography",
-      subtitle: "Capture special moments",
-      formTitle: "Photography Request",
-      formFields: [
-        { name: "address", label: "Address", type: "address", order: 1 },
-        { name: "name", label: "Name", type: "text", order: 2 },
-        { name: "when", label: "When", type: "text", order: 3 },
+        { name: "when", label: "When", type: "date_time", order: 3 },
       ],
     },
     {
@@ -113,7 +129,7 @@ function App() {
       formFields: [
         { name: "address", label: "Address", type: "address", order: 1 },
         { name: "name", label: "Name", type: "text", order: 2 },
-        { name: "when", label: "When", type: "text", order: 3 },
+        { name: "when", label: "When", type: "date_time", order: 3 },
       ],
     },
   ];
@@ -141,10 +157,15 @@ function App() {
     const message = activeForm.formFields
       .slice()
       .sort((a, b) => a.order - b.order)
-      .map(
-        (field) =>
-          `${field.label}: ${formValues[field.name] ? formValues[field.name] : ""}`
-      )
+      .map((field) => {
+        if (field.type === "date_time") {
+          const date = formValues[`${field.name}_date`] || "";
+          const start = formValues[`${field.name}_start`] || "";
+          const end = formValues[`${field.name}_end`] || "";
+          return `${field.label}: ${date} ${start ? "from " + start : ""}${end ? " to " + end : ""}`;
+        }
+        return `${field.label}: ${formValues[field.name] ? formValues[field.name] : ""}`;
+      })
       .join("\n");
 
     // Prepare template params for EmailJS
@@ -190,12 +211,102 @@ function App() {
         </h1>
         <div
           style={{
+            maxWidth: 700,
+            margin: "0 auto 32px auto",
+            textAlign: "center",
+            background: "rgba(56,161,255,0.10)",
+            borderRadius: 18,
+            padding: "0px 18px 18px 18px",
+            boxShadow: "0 2px 12px rgba(56,161,255,0.07)",
+          }}
+        >
+          <h2
+            style={{
+              fontSize: 26,
+              fontWeight: 700,
+              color: "#38a1ff",
+              marginBottom: 18,
+              letterSpacing: 0.5,
+            }}
+          >
+            How It Works
+          </h2>
+          <div>
+            {[
+              {
+                num: 1,
+                text: "Request a service by clicking a button below.",
+              },
+              {
+                num: 2,
+                text: "We'll find a Greenwich teen available for your job and contact you.",
+              },
+              {
+                num: 3,
+                text: "Finalize your job by confirming with the person we recommended.",
+              },
+            ].map((step, idx) => (
+              <div
+                key={step.num}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "flex-start",
+                  margin: "0 auto 18px auto",
+                  maxWidth: 600,
+                  background: "#fff",
+                  borderRadius: 12,
+                  boxShadow: "0 1px 6px rgba(56,161,255,0.07)",
+                  padding: "14px 18px",
+                }}
+              >
+                <span
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: 38,
+                    height: 38,
+                    borderRadius: "50%",
+                    background: "#38a1ff",
+                    color: "#fff",
+                    fontWeight: "bold",
+                    fontSize: 22,
+                    marginRight: 18,
+                    boxShadow: "0 2px 8px rgba(56,161,255,0.13)",
+                    flexShrink: 0,
+                  }}
+                >
+                  {step.num}
+                </span>
+                <span
+                  style={{
+                    textAlign: "left",
+                    color: "#222",
+                    fontSize: 18,
+                    fontWeight: 500,
+                  }}
+                >
+                  {step.text}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div
+          style={{
             display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
+            gridTemplateColumns:
+              window.innerWidth < 600
+                ? "1fr"
+                : window.innerWidth < 900
+                  ? "1fr 1fr"
+                  : "repeat(3, 1fr)",
             gap: 24,
             margin: "40px 0",
             justifyItems: "center",
             alignItems: "center",
+            transition: "grid-template-columns 0.2s",
           }}
         >
           {buttons.map((btn, idx) => (
@@ -203,7 +314,8 @@ function App() {
               key={idx}
               onClick={() => handleOpenModal(btn)}
               style={{
-                width: 260,
+                width: "100%",
+                maxWidth: 260,
                 height: 140,
                 padding: 20,
                 display: "flex",
@@ -231,7 +343,7 @@ function App() {
               <span>{btn.title}</span>
               <span
                 style={{
-                  fontSize: 14,
+                  fontSize: 22,
                   fontWeight: "normal",
                   opacity: 0.85,
                   marginTop: 4,
@@ -288,25 +400,122 @@ function App() {
                         fontWeight: 500,
                         fontSize: 16,
                         textAlign: "left",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 8,
                       }}
                     >
                       {field.label}
+                      {!field.optional && (
+                        <span
+                          style={{ color: "#ff4d4f", fontSize: 18 }}
+                          title="Required"
+                        >
+                          *
+                        </span>
+                      )}
+                      {field.optional && (
+                        <span
+                          style={{
+                            color: "#888",
+                            fontSize: 14,
+                            fontWeight: 400,
+                          }}
+                        >
+                          (optional)
+                        </span>
+                      )}
                     </label>
                     {field.type === "address" || field.name === "notes" ? (
                       <textarea
                         name={field.name}
                         value={formValues[field.name] || ""}
                         onChange={handleChange}
-                        rows={field.name === "notes" ? 6 : 3}
-                        style={{ width: 400, fontSize: 16, resize: "vertical" }}
+                        rows={field.name === "notes" ? 4 : 2}
+                        style={{
+                          width: "100%",
+                          fontSize: 16,
+                          resize: "vertical",
+                        }}
                       />
+                    ) : field.type === "date_time" ? (
+                      <div
+                        style={{
+                          display: "flex",
+                          gap: 8,
+                          alignItems: "center",
+                        }}
+                      >
+                        <input
+                          type="date"
+                          name={`${field.name}_date`}
+                          value={formValues[`${field.name}_date`] || ""}
+                          onChange={handleChange}
+                          style={{ fontSize: 16 }}
+                        />
+                        <input
+                          type="time"
+                          name={`${field.name}_start`}
+                          value={formValues[`${field.name}_start`] || ""}
+                          onChange={handleChange}
+                          style={{ fontSize: 16 }}
+                        />
+                        <span style={{ fontSize: 14 }}>to</span>
+                        <input
+                          type="time"
+                          name={`${field.name}_end`}
+                          value={formValues[`${field.name}_end`] || ""}
+                          onChange={handleChange}
+                          style={{ fontSize: 16 }}
+                        />
+                      </div>
+                    ) : field.type === "checkbox_group" ? (
+                      <div style={{ display: "flex", gap: 16 }}>
+                        {field.options.map((opt) => (
+                          <label
+                            key={opt.value}
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 4,
+                            }}
+                          >
+                            <input
+                              type="checkbox"
+                              name={field.name}
+                              value={opt.value}
+                              checked={
+                                Array.isArray(formValues[field.name])
+                                  ? formValues[field.name].includes(opt.value)
+                                  : false
+                              }
+                              onChange={(e) => {
+                                const checked = e.target.checked;
+                                setFormValues((prev) => {
+                                  if (checked) {
+                                    // Only allow one checked at a time
+                                    return {
+                                      ...prev,
+                                      [field.name]: [opt.value],
+                                    };
+                                  } else {
+                                    // Uncheck all if unchecked
+                                    return { ...prev, [field.name]: [] };
+                                  }
+                                });
+                              }}
+                            />
+                            {opt.label}
+                          </label>
+                        ))}
+                      </div>
                     ) : (
                       <input
                         type={field.type}
                         name={field.name}
                         value={formValues[field.name] || ""}
                         onChange={handleChange}
-                        style={{ width: 400, fontSize: 16 }}
+                        style={{ width: "100%", fontSize: 16 }}
                       />
                     )}
                   </div>
