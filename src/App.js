@@ -13,7 +13,7 @@ function App() {
     {
       title: "Babysitting",
       subtitle: "",
-      formTitle: "Babysitter",
+      formTitle: "Babysitting Request",
       formFields: [
         { name: "name", label: "Your Name", type: "text", order: 1 },
         { name: "address", label: "Address", type: "address", order: 2 },
@@ -38,7 +38,7 @@ function App() {
         },
         {
           name: "notes",
-          label: "Notes",
+          label: "Details",
           type: "notes",
           optional: true,
           order: 7,
@@ -149,8 +149,8 @@ function App() {
         { name: "name", label: "Your Name", type: "text", order: 1 },
         { name: "address", label: "Address", type: "address", order: 2 },
         {
-          name: "subject",
-          label: "Subject",
+          name: "activity",
+          label: "Activity",
           type: "dropdown",
           order: 3,
           placeholder: "Choose an activity",
