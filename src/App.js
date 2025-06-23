@@ -859,11 +859,14 @@ function App() {
               textAlign: "center",
             }}
           >
-            <h2 style={{ color: "#38a1ff", marginBottom: 16 }}>Thank you!</h2>
+            <h2 style={{ color: "#38a1ff", marginBottom: 16 }}>
+              Request Submitted
+            </h2>
             <p style={{ fontSize: 18, marginBottom: 24 }}>
-              Your request has been submitted.
+              Thanks! Your request has been submitted.
               <br />
-              We appreciate your interest in Greenwich Hire-A-Teen.
+              We’ll review the details and match you with a local helper as soon
+              as we can.
             </p>
             <button
               onClick={() => setShowConfirmation(false)}
