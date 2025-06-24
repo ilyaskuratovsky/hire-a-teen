@@ -674,6 +674,10 @@ function App() {
               borderRadius: 8,
               minWidth: 300,
               boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+              margin: "16px", // Add this line for even spacing on all sides
+              maxWidth: 420, // Optional: prevents modal from being too wide on mobile
+              width: "100%", // Ensures responsiveness
+              boxSizing: "border-box", // Ensures padding/margin are included in width
             }}
           >
             <h2>{activeForm.formTitle}</h2>
