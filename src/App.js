@@ -670,22 +670,14 @@ function App() {
           <div
             style={{
               background: "#fff",
-              padding: "24px",
+              padding: 24,
               borderRadius: 8,
-              minWidth: 0,
-              maxWidth: 420,
-              width: "100%",
-              boxSizing: "border-box",
-              margin: "16px",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center", // Center all content horizontally
+              minWidth: 300,
+              boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
             }}
           >
-            <h2 style={{ textAlign: "center", width: "100%" }}>
-              {activeForm.formTitle}
-            </h2>
-            <form onSubmit={handleSubmit} style={{ width: "100%" }}>
+            <h2>{activeForm.formTitle}</h2>
+            <form onSubmit={handleSubmit}>
               {activeForm.formFields
                 .slice()
                 .sort((a, b) => a.order - b.order)
