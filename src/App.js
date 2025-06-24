@@ -615,40 +615,6 @@ function App() {
                 – Tanya E.
               </span>
             </div>
-            <div
-              style={{
-                background: "#fff",
-                borderRadius: 12,
-                padding: "18px 20px",
-                boxShadow: "0 1px 6px rgba(56,161,255,0.07)",
-                fontStyle: "italic",
-                color: "#333",
-              }}
-            >
-              “We found a wonderful babysitter through this service. Our kids
-              loved her!”
-              <br />
-              <span style={{ fontWeight: 500, color: "#38a1ff" }}>
-                – John & Emily R.
-              </span>
-            </div>
-            <div
-              style={{
-                background: "#fff",
-                borderRadius: 12,
-                padding: "18px 20px",
-                boxShadow: "0 1px 6px rgba(56,161,255,0.07)",
-                fontStyle: "italic",
-                color: "#333",
-              }}
-            >
-              “Sam gave basketball lessons to my 9-year-old and it was a
-              fantastic experience. My son learned a lot and had so much fun!”
-              <br />
-              <span style={{ fontWeight: 500, color: "#38a1ff" }}>
-                – Somya G.
-              </span>
-            </div>
           </div>
         </div>
       </header>
