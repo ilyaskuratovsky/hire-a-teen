@@ -670,18 +670,22 @@ function App() {
           <div
             style={{
               background: "#fff",
-              padding: 24,
+              padding: "24px",
               borderRadius: 8,
-              minWidth: 300,
-              boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
-              margin: "16px", // Add this line for even spacing on all sides
-              maxWidth: 420, // Optional: prevents modal from being too wide on mobile
-              width: "100%", // Ensures responsiveness
-              boxSizing: "border-box", // Ensures padding/margin are included in width
+              minWidth: 0,
+              maxWidth: 420,
+              width: "100%",
+              boxSizing: "border-box",
+              margin: "16px",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center", // Center all content horizontally
             }}
           >
-            <h2>{activeForm.formTitle}</h2>
-            <form onSubmit={handleSubmit}>
+            <h2 style={{ textAlign: "center", width: "100%" }}>
+              {activeForm.formTitle}
+            </h2>
+            <form onSubmit={handleSubmit} style={{ width: "100%" }}>
               {activeForm.formFields
                 .slice()
                 .sort((a, b) => a.order - b.order)
