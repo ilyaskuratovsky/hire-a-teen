@@ -612,7 +612,7 @@ function App() {
               did a fantastic job. Highly recommend!”
               <br />
               <span style={{ fontWeight: 500, color: "#38a1ff" }}>
-                – Sarah M.
+                – Tanya E.
               </span>
             </div>
             <div
@@ -642,11 +642,11 @@ function App() {
                 color: "#333",
               }}
             >
-              “Quick, easy, and reliable. The teen who cleaned our car was
-              awesome!”
+              “Sam gave basketball lessons to my 9-year-old and it was a
+              fantastic experience. My son learned a lot and had so much fun!”
               <br />
               <span style={{ fontWeight: 500, color: "#38a1ff" }}>
-                – Mike D.
+                – Somya G.
               </span>
             </div>
           </div>
