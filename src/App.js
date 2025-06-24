@@ -575,6 +575,82 @@ function App() {
             </button>
           ))}
         </div>
+        <div
+          style={{
+            maxWidth: 700,
+            margin: "32px auto 0 auto",
+            padding: "24px 18px",
+            background: "rgba(56,161,255,0.07)",
+            borderRadius: 18,
+            boxShadow: "0 2px 12px rgba(56,161,255,0.07)",
+            textAlign: "center",
+          }}
+        >
+          <h2
+            style={{
+              fontSize: 24,
+              fontWeight: 700,
+              color: "#38a1ff",
+              marginBottom: 18,
+              letterSpacing: 0.5,
+            }}
+          >
+            What Our Neighbors Say
+          </h2>
+          <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+            <div
+              style={{
+                background: "#fff",
+                borderRadius: 12,
+                padding: "18px 20px",
+                boxShadow: "0 1px 6px rgba(56,161,255,0.07)",
+                fontStyle: "italic",
+                color: "#333",
+              }}
+            >
+              “The teen who helped with our yard work was polite, on time, and
+              did a fantastic job. Highly recommend!”
+              <br />
+              <span style={{ fontWeight: 500, color: "#38a1ff" }}>
+                – Sarah M.
+              </span>
+            </div>
+            <div
+              style={{
+                background: "#fff",
+                borderRadius: 12,
+                padding: "18px 20px",
+                boxShadow: "0 1px 6px rgba(56,161,255,0.07)",
+                fontStyle: "italic",
+                color: "#333",
+              }}
+            >
+              “We found a wonderful babysitter through this service. Our kids
+              loved her!”
+              <br />
+              <span style={{ fontWeight: 500, color: "#38a1ff" }}>
+                – John & Emily R.
+              </span>
+            </div>
+            <div
+              style={{
+                background: "#fff",
+                borderRadius: 12,
+                padding: "18px 20px",
+                boxShadow: "0 1px 6px rgba(56,161,255,0.07)",
+                fontStyle: "italic",
+                color: "#333",
+              }}
+            >
+              “Quick, easy, and reliable. The teen who cleaned our car was
+              awesome!”
+              <br />
+              <span style={{ fontWeight: 500, color: "#38a1ff" }}>
+                – Mike D.
+              </span>
+            </div>
+          </div>
+        </div>
       </header>
       {showModal && activeForm && (
         <div
