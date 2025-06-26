@@ -357,6 +357,16 @@ function App() {
   // Form state for all fields
   const [formValues, setFormValues] = useState({});
 
+  // State for Teen Signup Dialog
+  const [showTeenSignup, setShowTeenSignup] = useState(false);
+  const [teenForm, setTeenForm] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    interests: "",
+  });
+  const [teenSignupSent, setTeenSignupSent] = useState(false);
+
   const handleOpenModal = (btn) => {
     setActiveForm(btn);
     // Reset form values for new form
@@ -368,6 +378,14 @@ function App() {
     setFormValues((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
+    }));
+  };
+
+  const handleTeenChange = (e) => {
+    const { name, value } = e.target;
+    setTeenForm((prev) => ({
+      ...prev,
+      [name]: value,
     }));
   };
 
@@ -410,6 +428,42 @@ function App() {
       },
       (error) => {
         alert("Failed to send request.: " + JSON.stringify(error));
+      }
+    );
+  };
+
+  const handleTeenSubmit = (e) => {
+    e.preventDefault();
+    const message = [
+      "Name: " + teenForm.name,
+      "Phone: " + teenForm.phone,
+      "Email: " + teenForm.email,
+      "Interests: " + teenForm.interests,
+    ].join("\n");
+
+    const templateParams = {
+      type: "Teen Signup",
+      message,
+    };
+    const SERVICE_ID = "service_9jynhfj";
+    const TEMPLATE_ID = "template_7c6kzgr";
+    const USER_ID = "fbF9XXilrLgIe1NID";
+    emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams, USER_ID).then(
+      () => {
+        setTeenSignupSent(true);
+        setTimeout(() => {
+          setShowTeenSignup(false);
+          setTeenSignupSent(false);
+          setTeenForm({
+            name: "",
+            phone: "",
+            email: "",
+            interests: "",
+          });
+        }, 2000);
+      },
+      (error) => {
+        alert("Failed to send signup: " + JSON.stringify(error));
       }
     );
   };
@@ -577,45 +631,48 @@ function App() {
         </div>
         <div
           style={{
-            maxWidth: 700,
-            margin: "32px auto 0 auto",
-            padding: "24px 18px",
-            background: "rgba(56,161,255,0.07)",
-            borderRadius: 18,
-            boxShadow: "0 2px 12px rgba(56,161,255,0.07)",
+            margin: "48px auto 0 auto",
+            maxWidth: 340,
             textAlign: "center",
+            padding: "18px 0 0 0",
           }}
         >
-          <h2
+          <button
             style={{
-              fontSize: 24,
+              width: "100%",
+              padding: "18px 18px 18px 18px", // Increased left/right padding
+              borderRadius: 14,
+              background: "linear-gradient(90deg, #b71234 0%, #ffc72c 100%)",
+              color: "#fff",
               fontWeight: 700,
-              color: "#38a1ff",
-              marginBottom: 18,
-              letterSpacing: 0.5,
+              fontSize: 26, // Bigger font
+              border: "none",
+              boxShadow: "0 2px 8px rgba(35,31,32,0.10)",
+              cursor: "pointer",
+              marginBottom: 6,
+              letterSpacing: 0.2,
+              transition: "background 0.2s, transform 0.1s",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              lineHeight: 1.2,
             }}
+            onClick={() => setShowTeenSignup(true)}
           >
-            What Our Neighbors Say
-          </h2>
-          <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
-            <div
+            Greenwich Teen Signup
+            <span
               style={{
-                background: "#fff",
-                borderRadius: 12,
-                padding: "18px 20px",
-                boxShadow: "0 1px 6px rgba(56,161,255,0.07)",
-                fontStyle: "italic",
-                color: "#333",
+                fontSize: 17,
+                fontWeight: 400,
+                color: "#fff",
+                opacity: 0.85,
+                marginTop: 6,
+                letterSpacing: 0.1,
               }}
             >
-              “The teen who helped with our yard work was polite, on time, and
-              did a fantastic job. Highly recommend!”
-              <br />
-              <span style={{ fontWeight: 500, color: "#38a1ff" }}>
-                – Tanya E.
-              </span>
-            </div>
-          </div>
+              (Are you looking to work this summer?)
+            </span>
+          </button>
         </div>
       </header>
       {showModal && activeForm && (
@@ -934,6 +991,184 @@ function App() {
             >
               Close
             </button>
+          </div>
+        </div>
+      )}
+      {/* Teen Signup Dialog */}
+      {showTeenSignup && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "rgba(0,0,0,0.5)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1200,
+          }}
+        >
+          <div
+            style={{
+              background: "#fff",
+              padding: 32,
+              borderRadius: 12,
+              minWidth: 320,
+              boxShadow: "0 2px 12px rgba(0,0,0,0.18)",
+              textAlign: "center",
+              maxWidth: 350,
+            }}
+          >
+            {teenSignupSent ? (
+              <div style={{ fontSize: 20, color: "#38a1ff", fontWeight: 600 }}>
+                Signup submitted! Thank you!
+              </div>
+            ) : (
+              <>
+                <h2 style={{ color: "#b71234", marginBottom: 16 }}>
+                  Greenwich Teen Signup
+                </h2>
+                <form onSubmit={handleTeenSubmit}>
+                  <div style={{ marginBottom: 16, textAlign: "left" }}>
+                    <label style={{ fontWeight: 500 }}>
+                      Name
+                      <span style={{ color: "#b71234", marginLeft: 4 }}>*</span>
+                    </label>
+                    <input
+                      type="text"
+                      name="name"
+                      value={teenForm.name}
+                      onChange={handleTeenChange}
+                      required
+                      style={{
+                        width: "100%",
+                        fontSize: 16,
+                        padding: "8px 6px",
+                        borderRadius: 6,
+                        border: "1px solid #bbb",
+                        marginTop: 4,
+                      }}
+                    />
+                  </div>
+                  <div style={{ marginBottom: 16, textAlign: "left" }}>
+                    <label style={{ fontWeight: 500 }}>
+                      Phone Number
+                      <span style={{ color: "#b71234", marginLeft: 4 }}>*</span>
+                    </label>
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={teenForm.phone}
+                      onChange={handleTeenChange}
+                      required
+                      style={{
+                        width: "100%",
+                        fontSize: 16,
+                        padding: "8px 6px",
+                        borderRadius: 6,
+                        border: "1px solid #bbb",
+                        marginTop: 4,
+                      }}
+                    />
+                  </div>
+                  <div style={{ marginBottom: 16, textAlign: "left" }}>
+                    <label style={{ fontWeight: 500 }}>
+                      Email
+                      <span style={{ color: "#b71234", marginLeft: 4 }}>*</span>
+                    </label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={teenForm.email}
+                      onChange={handleTeenChange}
+                      required
+                      style={{
+                        width: "100%",
+                        fontSize: 16,
+                        padding: "8px 6px",
+                        borderRadius: 6,
+                        border: "1px solid #bbb",
+                        marginTop: 4,
+                      }}
+                    />
+                  </div>
+                  <div style={{ marginBottom: 18, textAlign: "left" }}>
+                    <label
+                      style={{
+                        fontWeight: 500,
+                        marginBottom: 6,
+                        display: "block",
+                      }}
+                    >
+                      What jobs are you interested in?
+                    </label>
+                    <textarea
+                      name="interests"
+                      value={teenForm.interests}
+                      onChange={handleTeenChange}
+                      rows={3}
+                      style={{
+                        width: "100%",
+                        fontSize: 16,
+                        padding: "8px 6px",
+                        borderRadius: 6,
+                        border: "1px solid #bbb",
+                        resize: "vertical",
+                        marginTop: 4,
+                      }}
+                      placeholder="Describe the jobs or types of work you're interested in"
+                      required
+                    />
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: 16,
+                      justifyContent: "center",
+                      marginTop: 18,
+                    }}
+                  >
+                    <button
+                      type="submit"
+                      style={{
+                        background: "#b71234",
+                        color: "#fff",
+                        fontWeight: "bold",
+                        fontSize: 17,
+                        padding: "10px 28px",
+                        border: "none",
+                        borderRadius: 16,
+                        boxShadow: "0 1px 4px rgba(183,18,52,0.10)",
+                        cursor: "pointer",
+                        transition: "background 0.2s, transform 0.1s",
+                      }}
+                    >
+                      Submit
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowTeenSignup(false)}
+                      style={{
+                        background: "#e6e7e8",
+                        color: "#231f20",
+                        fontWeight: "bold",
+                        fontSize: 17,
+                        padding: "10px 28px",
+                        border: "none",
+                        borderRadius: 16,
+                        boxShadow: "0 1px 4px rgba(35,31,32,0.10)",
+                        cursor: "pointer",
+                        transition: "background 0.2s, transform 0.1s",
+                      }}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              </>
+            )}
           </div>
         </div>
       )}
