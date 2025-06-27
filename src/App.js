@@ -364,6 +364,7 @@ function App() {
     phone: "",
     email: "",
     interests: "",
+    school: "",
   });
   const [teenSignupSent, setTeenSignupSent] = useState(false);
 
@@ -438,6 +439,7 @@ function App() {
       "Name: " + teenForm.name,
       "Phone: " + teenForm.phone,
       "Email: " + teenForm.email,
+      "School: " + teenForm.school,
       "Interests: " + teenForm.interests,
     ].join("\n");
 
@@ -459,6 +461,7 @@ function App() {
             phone: "",
             email: "",
             interests: "",
+            school: "",
           });
         }, 2000);
       },
@@ -1093,6 +1096,56 @@ function App() {
                         marginTop: 4,
                       }}
                     />
+                  </div>
+                  <div style={{ marginBottom: 16, textAlign: "left" }}>
+                    <label style={{ fontWeight: 500 }}>
+                      School
+                      <span style={{ color: "#b71234", marginLeft: 4 }}>*</span>
+                    </label>
+                    <select
+                      name="school"
+                      value={teenForm.school}
+                      onChange={handleTeenChange}
+                      required
+                      style={{
+                        width: "100%",
+                        fontSize: 16,
+                        padding: "8px 6px",
+                        borderRadius: 6,
+                        border: "1px solid #bbb",
+                        marginTop: 4,
+                        background: "#fff",
+                        color: teenForm.school ? "#222" : "#888",
+                      }}
+                    >
+                      <option value="" disabled>
+                        Select your school
+                      </option>
+                      <option value="Greenwich High School">
+                        Greenwich High School
+                      </option>
+                      <option value="Eastern Middle School">
+                        Eastern Middle School
+                      </option>
+                      <option value="Western Middle School">
+                        Western Middle School
+                      </option>
+                      <option value="Central Middle School">
+                        Central Middle School
+                      </option>
+                      <option value="Greenwich Academy">
+                        Greenwich Academy
+                      </option>
+                      <option value="King School">King School</option>
+                      <option value="Brunswick School">Brunswick School</option>
+                      <option value="Sacred Heart Greenwich">
+                        Sacred Heart Greenwich
+                      </option>
+                      <option value="Greenwich Country Day School">
+                        Greenwich Country Day School
+                      </option>
+                      <option value="Other">Other* (specify below)</option>
+                    </select>
                   </div>
                   <div style={{ marginBottom: 18, textAlign: "left" }}>
                     <label
