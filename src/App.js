@@ -318,6 +318,41 @@ function App() {
       ],
     },
     {
+      title: "Power Washing",
+      subtitle: "Patios, driveways, garbage cans, etc.",
+      formTitle: "Power Washing Request",
+      formFields: [
+        { name: "name", label: "Your Name", type: "text", order: 1 },
+        { name: "address", label: "Address", type: "address", order: 2 },
+        { name: "email", label: "Email Address", type: "email", order: 3 },
+        {
+          name: "phone",
+          label: "Phone Number",
+          type: "tel",
+          order: 4,
+          optional: true,
+        },
+        {
+          name: "preferred_contact",
+          label: "Preferred Way to Contact",
+          type: "checkbox_group",
+          options: [
+            { value: "email", label: "Email" },
+            { value: "call", label: "Call" },
+            { value: "text", label: "Text" },
+          ],
+          order: 5,
+        },
+        {
+          name: "notes",
+          label: "Details",
+          type: "notes",
+          optional: true,
+          order: 7,
+        },
+      ],
+    },
+    {
       title: "Other",
       subtitle: "Custom requests",
       formTitle: "Other Request",
