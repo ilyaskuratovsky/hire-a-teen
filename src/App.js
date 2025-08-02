@@ -1,5 +1,8 @@
 import React, { useState } from "react";
-import logo from "./logo.svg";
+import { collection, addDoc } from "firebase/firestore";
+import db from "./firebase"; // Import your Firestore instance
+import { sendEmail } from "./EmailService.js";
+
 import emailjs from "emailjs-com";
 import "./App.css";
 import BUTTONS from "./buttons.js"; // Import the buttons configuration
@@ -89,7 +92,7 @@ function App() {
     );
   };
 
-  const handleTeenSubmit = (e) => {
+  const handleTeenSubmit = async (e) => {
     e.preventDefault();
     const message = [
       "Name: " + teenForm.name,
@@ -103,6 +106,27 @@ function App() {
       type: "Teen Signup",
       message,
     };
+
+    sendEmail(templateParams).then(
+      () => {
+        setTeenSignupSent(true);
+        setTimeout(() => {
+          setShowTeenSignup(false);
+          setTeenSignupSent(false);
+          setTeenForm({
+            name: "",
+            phone: "",
+            email: "",
+            interests: "",
+            school: "",
+          });
+        }, 2000);
+      },
+      (error) => {
+        alert("Failed to send signup: " + JSON.stringify(error));
+      }
+    );
+    /*
     const SERVICE_ID = "service_9jynhfj";
     const TEMPLATE_ID = "template_7c6kzgr";
     const USER_ID = "fbF9XXilrLgIe1NID";
@@ -125,6 +149,17 @@ function App() {
         alert("Failed to send signup: " + JSON.stringify(error));
       }
     );
+    */
+    // Save to Firestore
+    const teenData = {
+      name: teenForm.name,
+      phone: teenForm.phone,
+      email: teenForm.email,
+      school: teenForm.school,
+      interests: teenForm.interests,
+      createdAt: new Date(),
+    };
+    await addDoc(collection(db, "teens"), teenData);
   };
 
   return (
