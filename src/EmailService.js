@@ -1,10 +1,9 @@
 import emailjs from "emailjs-com";
 
-const SERVICE_ID = "service_9jynhfj";
-const TEMPLATE_ID = "template_7c6kzgr";
-const USER_ID = "fbF9XXilrLgIe1NID";
-
 const EMAIL_ENABLED = process.env.REACT_APP_EMAIL_ENABLED === "true";
+const SERVICE_ID = process.env.REACT_APP_EMAILJS_SERVICE_ID;
+const TEMPLATE_ID = process.env.REACT_APP_EMAILJS_TEMPLATE_ID;
+const USER_ID = process.env.REACT_APP_EMAILJS_USER_ID;
 
 // Wrapper function that returns the emailjs.send promise
 export function sendEmail(templateParams) {

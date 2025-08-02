@@ -49,7 +49,7 @@ function App() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const message = activeForm.formFields
@@ -73,21 +73,34 @@ function App() {
       ...formValues,
     };
 
-    // Replace these with your EmailJS values
-    //const SERVICE_ID = "service_yyupiua";
-    //const TEMPLATE_ID = "template_0xbtn68";
-    //const TEMPLATE_ID = "template_bscjeem";
-    //const USER_ID = "K_WhNfwPe38QSV54i";
-    const SERVICE_ID = "service_9jynhfj";
-    const TEMPLATE_ID = "template_7c6kzgr";
-    const USER_ID = "fbF9XXilrLgIe1NID";
-    emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams, USER_ID).then(
+    // Save job request to Firestore
+    const jobData = {
+      type: activeForm.title,
+      ...formValues,
+      createdAt: new Date(),
+    };
+    try {
+      await addDoc(collection(db, "jobs"), jobData);
+    } catch (err) {
+      alert(
+        "Request failed: " +
+          err.message +
+          ", please notify the administrator or try again later."
+      );
+    }
+
+    // Send email as before
+    sendEmail(templateParams).then(
       (result) => {
         setShowModal(false);
         setShowConfirmation(true);
       },
       (error) => {
-        alert("Failed to send request.: " + JSON.stringify(error));
+        alert(
+          "Failed to send signup: " +
+            JSON.stringify(error) +
+            ". Please alert the administrator."
+        );
       }
     );
   };
@@ -123,7 +136,11 @@ function App() {
         }, 2000);
       },
       (error) => {
-        alert("Failed to send signup: " + JSON.stringify(error));
+        alert(
+          "Failed to send signup: " +
+            JSON.stringify(error) +
+            ". Please alert the administrator."
+        );
       }
     );
     /*
