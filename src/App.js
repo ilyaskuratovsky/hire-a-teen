@@ -24,6 +24,7 @@ function App() {
     email: "",
     interests: "",
     school: "",
+    agreeTexts: false, // <-- new field
   });
   const [teenSignupSent, setTeenSignupSent] = useState(false);
 
@@ -41,11 +42,12 @@ function App() {
     }));
   };
 
+  // Update handleTeenChange to handle checkbox:
   const handleTeenChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
     setTeenForm((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
 
@@ -132,6 +134,7 @@ function App() {
             email: "",
             interests: "",
             school: "",
+            agreeTexts: false, // Reset agreeTexts
           });
         }, 2000);
       },
@@ -143,30 +146,7 @@ function App() {
         );
       }
     );
-    /*
-    const SERVICE_ID = "service_9jynhfj";
-    const TEMPLATE_ID = "template_7c6kzgr";
-    const USER_ID = "fbF9XXilrLgIe1NID";
-    emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams, USER_ID).then(
-      () => {
-        setTeenSignupSent(true);
-        setTimeout(() => {
-          setShowTeenSignup(false);
-          setTeenSignupSent(false);
-          setTeenForm({
-            name: "",
-            phone: "",
-            email: "",
-            interests: "",
-            school: "",
-          });
-        }, 2000);
-      },
-      (error) => {
-        alert("Failed to send signup: " + JSON.stringify(error));
-      }
-    );
-    */
+
     // Save to Firestore
     const teenData = {
       name: teenForm.name,
@@ -178,6 +158,14 @@ function App() {
     };
     await addDoc(collection(db, "teens"), teenData);
   };
+
+  const isTeenFormValid =
+    teenForm.name.trim() !== "" &&
+    teenForm.phone.trim() !== "" &&
+    teenForm.email.trim() !== "" &&
+    teenForm.school.trim() !== "" &&
+    teenForm.interests.trim() !== "" &&
+    teenForm.agreeTexts;
 
   return (
     <div className="App">
@@ -812,6 +800,27 @@ function App() {
                       required
                     />
                   </div>
+                  <div style={{ marginBottom: 12, textAlign: "left" }}>
+                    <label
+                      style={{ display: "flex", alignItems: "center", gap: 8 }}
+                    >
+                      <input
+                        type="checkbox"
+                        name="agreeTexts"
+                        checked={teenForm.agreeTexts}
+                        onChange={handleTeenChange}
+                        required
+                        style={{ width: 18, height: 18 }}
+                      />
+                      <span>
+                        I agree to receive text messages about job
+                        opportunities.
+                        <span style={{ color: "#b71234", marginLeft: 4 }}>
+                          *
+                        </span>
+                      </span>
+                    </label>
+                  </div>
                   <div
                     style={{
                       display: "flex",
@@ -822,8 +831,9 @@ function App() {
                   >
                     <button
                       type="submit"
+                      disabled={!isTeenFormValid}
                       style={{
-                        background: "#b71234",
+                        background: isTeenFormValid ? "#b71234" : "#ccc",
                         color: "#fff",
                         fontWeight: "bold",
                         fontSize: 17,
@@ -831,7 +841,7 @@ function App() {
                         border: "none",
                         borderRadius: 16,
                         boxShadow: "0 1px 4px rgba(183,18,52,0.10)",
-                        cursor: "pointer",
+                        cursor: isTeenFormValid ? "pointer" : "not-allowed",
                         transition: "background 0.2s, transform 0.1s",
                       }}
                     >
