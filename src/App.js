@@ -3,7 +3,6 @@ import { collection, addDoc } from "firebase/firestore";
 import db from "./firebase"; // Import your Firestore instance
 import { sendEmail } from "./EmailService.js";
 
-import emailjs from "emailjs-com";
 import "./App.css";
 import BUTTONS from "./buttons.js"; // Import the buttons configuration
 import HowItWorks from "./HowItWorks.react";
