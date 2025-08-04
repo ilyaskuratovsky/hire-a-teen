@@ -7,6 +7,7 @@ import emailjs from "emailjs-com";
 import "./App.css";
 import BUTTONS from "./buttons.js"; // Import the buttons configuration
 import HowItWorks from "./HowItWorks.react";
+import Spinner from "./Spinner.react"; // Add this import at the top
 
 function App() {
   const [showModal, setShowModal] = useState(false);
@@ -27,6 +28,7 @@ function App() {
     agreeTexts: false, // <-- new field
   });
   const [teenSignupSent, setTeenSignupSent] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   const handleOpenModal = (btn) => {
     setActiveForm(btn);
@@ -53,6 +55,7 @@ function App() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setSubmitting(true); // Start spinner
 
     const message = activeForm.formFields
       .slice()
@@ -75,20 +78,26 @@ function App() {
       ...formValues,
     };
 
-    // Save job request to Firestore
+    // Prepare job data for API
     const jobData = {
       type: activeForm.title,
       ...formValues,
       createdAt: new Date(),
     };
+
+    // POST to submitJob endpoint
     try {
-      await addDoc(collection(db, "jobs"), jobData);
+      const response = await fetch(process.env.REACT_APP_SUBMIT_JOB_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(jobData),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to submit job: " + response.statusText);
+      }
     } catch (err) {
-      alert(
-        "Request failed: " +
-          err.message +
-          ", please notify the administrator or try again later."
-      );
+      //silently ignore errors from the API
+      console.log("Error submitting job:", err);
     }
 
     // Send email as before
@@ -96,6 +105,7 @@ function App() {
       (result) => {
         setShowModal(false);
         setShowConfirmation(true);
+        setSubmitting(false); // Stop spinner
       },
       (error) => {
         alert(
@@ -103,6 +113,7 @@ function App() {
             JSON.stringify(error) +
             ". Please alert the administrator."
         );
+        setSubmitting(false); // Stop spinner
       }
     );
   };
@@ -325,8 +336,28 @@ function App() {
               borderRadius: 8,
               minWidth: 300,
               boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+              position: "relative",
             }}
           >
+            {submitting && (
+              <div
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  background: "rgba(255,255,255,0.7)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  zIndex: 10,
+                  borderRadius: 8,
+                }}
+              >
+                <Spinner size={40} color="#4f8cff" />
+              </div>
+            )}
             <h2>{activeForm.formTitle}</h2>
             <form onSubmit={handleSubmit}>
               {activeForm.formFields
