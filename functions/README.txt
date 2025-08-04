@@ -1,3 +1,8 @@
+### Deploy
+firebase deploy --only functions --debug
+firebase deploy --only functions:myFunctionName --debug
+
+
 ### Run emulator
 firebase emulators:start --only functions
 
