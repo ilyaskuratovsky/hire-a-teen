@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>About Us - TeenHelper</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        margin: 0;
+        padding: 0;
+        background: #282c34;
+        color: #333;
+      }
+      .container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 0px 20px;
+        background: #2e435b;
+      }
+      h1,
+      h2 {
+        color: white;
+      }
+      .team-section {
+        display: flex;
+        flex-wrap: wrap;
+        margin-top: 10px;
+        gap: 40px;
+      }
+      .team-member {
+        flex: 1 1 300px;
+        background: #f0f4f8;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      }
+      .team-member img {
+        width: 100%;
+        max-width: 300px;
+        height: auto;
+        border-radius: 8px;
+        margin-bottom: 15px;
+      }
+      @media (max-width: 600px) {
+        .team-section {
+          flex-direction: column;
+        }
+      }
+      .back-home-link {
+        display: inline-block;
+        margin: 20px 0;
+        padding: 8px 15px;
+        background-color: #38a1ff;
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+        font-family: Arial, sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <a href="/" class="back-home-link">← Back to TeenHelper</a>
+      <h1 style="color: #328cdd">About Us</h1>
+      <p style="color: #eeeeee">
+        <strong>TeenHelper</strong> connects motivated teens with local
+        opportunities. From coaching and tutoring to odd jobs and pet care. Our
+        mission is simple: help teens earn, grow, and give back to their
+        communities.
+      </p>
+      <p style="color: #eeeeee">
+        It all started with a personal experience. When Sam Skuratovsky and his
+        friends were looking for summer work training kids in sports, they
+        realized they weren’t alone. Plenty of teens were eager to earn money
+        and gain experience. What they needed was a way to connect with people
+        in their neighborhoods.
+      </p>
+      <p style="color: #eeeeee">That’s how TeenHelper was born.</p>
+
+      <h1 style="color: #328cdd">Meet the Team</h1>
+      <div class="team-section">
+        <div class="team-member">
+          <img
+            src="sam.png"
+            style="height: 200px; width: auto"
+            alt="Sam Skuratovsky"
+          />
+          <h3>Sam Skuratovsky</h3>
+          <p><strong>Founder, TeenHelper</strong></p>
+          <p>
+            Sam is a student at Greenwich High School and a proud member of the
+            school's basketball team. In between classes and practice, Sam
+            spends his time learning computer programming, something he’s been
+            exploring with his dad since middle school.
+          </p>
+          <p>
+            He founded TeenHelper to solve a problem he and his friends were
+            facing — finding flexible, local work as teenagers. Today, he’s
+            driven to help others do the same.
+          </p>
+        </div>
+
+        <div class="team-member">
+          <img
+            src="ilya.png"
+            style="height: 200px; width: auto"
+            alt="Ilya Skuratovsky"
+          />
+          <h3>Ilya Skuratovsky</h3>
+          <p><strong>CTO, TeenHelper</strong></p>
+          <p>
+            Ilya is a seasoned software engineer with over 20 years of
+            experience building enterprise-level applications for companies
+            large and small. When Sam came to him with the idea for TeenHelper,
+            Ilya brought it to life — architecting the platform and guiding its
+            technical growth.
+          </p>
+          <p>
+            Beyond coding, Ilya is passionate about mentoring the next
+            generation of developers, including Sam.
+          </p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
