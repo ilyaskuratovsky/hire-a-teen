@@ -21,7 +21,7 @@ export const submitJob = functions.https.onRequest(async (req, res) => {
     return;
   }
 
-  logger.log("xyReceived request to add job:", req.body);
+  logger.log("1Received request to add job:", req.body);
   const jobData = req.body;
 
   try {
