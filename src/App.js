@@ -312,6 +312,36 @@ function App() {
             </span>
           </button>
         </div>
+        <div
+          style={{
+            marginBottom: 24,
+            marginTop: 44,
+            fontSize: 16,
+            color: "#666",
+          }}
+        >
+          <a
+            href="https://www.facebook.com/profile.php?id=61577750981708"
+            style={{
+              color: "#4ea1ff",
+              textDecoration: "underline",
+              cursor: "pointer",
+            }}
+          >
+            Facebook
+          </a>
+          {" | "}
+          <a
+            href="about.html"
+            style={{
+              color: "#4ea1ff",
+              textDecoration: "underline",
+              cursor: "pointer",
+            }}
+          >
+            About
+          </a>
+        </div>
       </header>
       {showModal && activeForm && (
         <div
