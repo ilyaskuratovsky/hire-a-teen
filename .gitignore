@@ -24,4 +24,4 @@ yarn-error.log*
 twilio_secrets.txt
 secrets.txt
 *debug.log
-business/
+secrets/
