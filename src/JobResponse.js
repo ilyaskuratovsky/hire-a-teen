@@ -38,10 +38,6 @@ function JobResponse() {
     setConfirmation(null);
     setError(null);
 
-    alert(
-      "Submitting your response..." +
-        process.env.REACT_APP_SUBMIT_TEEN_JOB_RESPONSE_URL
-    );
     try {
       const response = await fetch(
         process.env.REACT_APP_SUBMIT_TEEN_JOB_RESPONSE_URL,
@@ -62,8 +58,9 @@ function JobResponse() {
         throw new Error(`Server error: ${response.statusText}`);
       }
 
-      const data = await response.json();
-      setConfirmation(`Response recorded successfully (ID: ${data.teenJobId})`);
+      setConfirmation(
+        `Thank you! Your response has been recorded as "${status === "available" ? "Available" : "Not Available"}".`
+      );
     } catch (err) {
       setError("Failed to submit response: " + err.message);
     } finally {
@@ -73,15 +70,25 @@ function JobResponse() {
 
   if (loading) return <p>Loading job data...</p>;
   if (error) return <p style={{ color: "red" }}>{error}</p>;
+  if (confirmation) {
+    return (
+      <div
+        style={{
+          width: "100%",
+          display: "flex",
+          padding: "20px",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <p style={{ marginBottom: 10 }}>{confirmation}</p>
+      </div>
+    );
+  }
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>{JSON.stringify(job)}</h1>
-      <h2>Respondent: {respondentId}</h2>
-
-      {confirmation && (
-        <p style={{ color: "green", marginBottom: 10 }}>{confirmation}</p>
-      )}
+    <div style={{ width: "100%", padding: "20px" }}>
+      <Job type={job.type} address={job.address} notes={job.notes} />
 
       <div style={{ display: "flex", gap: "10px" }}>
         <button
@@ -127,3 +134,81 @@ function JobResponse() {
 }
 
 export default JobResponse;
+
+function Job({ type, notes, address, activityType }) {
+  return (
+    <div
+      style={{
+        maxWidth: 400,
+        margin: "20px auto",
+        padding: 16,
+        borderRadius: 12,
+        boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
+        backgroundColor: "#fff",
+        fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+      }}
+    >
+      <h1
+        style={{
+          fontSize: 28,
+          marginBottom: 20,
+          color: "#222",
+          textAlign: "center",
+        }}
+      >
+        Job Request
+      </h1>
+
+      <div
+        style={{
+          fontSize: 22,
+          fontWeight: "700",
+          color: "#111",
+          textTransform: "capitalize",
+          marginBottom: 16,
+        }}
+      >
+        {type}
+      </div>
+
+      {activityType && (
+        <div
+          style={{
+            marginBottom: 12,
+            fontSize: 16,
+            color: "#666",
+            fontStyle: "italic",
+          }}
+        >
+          <strong>Activity Type:</strong> {activityType}
+        </div>
+      )}
+
+      <div
+        style={{
+          fontSize: 16,
+          lineHeight: 1.5,
+          color: "#555",
+          whiteSpace: "pre-wrap",
+          wordBreak: "break-word",
+        }}
+      >
+        <strong>Address:</strong>
+        <p style={{ marginTop: 4 }}>{address}</p>
+      </div>
+
+      <div
+        style={{
+          fontSize: 16,
+          lineHeight: 1.5,
+          color: "#555",
+          whiteSpace: "pre-wrap",
+          wordBreak: "break-word",
+        }}
+      >
+        <strong>Notes:</strong>
+        <p style={{ marginTop: 4 }}>{notes}</p>
+      </div>
+    </div>
+  );
+}

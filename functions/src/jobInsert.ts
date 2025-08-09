@@ -41,7 +41,7 @@ export const jobInsert = onDocumentCreated(
       teensSnapshot.forEach((doc) => {
         const data = doc.data();
         if (data.textMessagingStatus === "allowed" && data.phone) {
-          const message = `New Teen Helper Request (${jobData.type || "N/A"}})\n\nDescription:\n ${jobData.notes || ""}\nClick Link to Respond: https://www.teenhelper.com/#/job/${jobId}/${doc.id}`;
+          const message = `New TeenHelper Job Request (${jobData.type || "N/A"})\n\nDescription:\n${jobData.notes || ""}\n\nClick Link to Respond: https://www.teenhelper.com/#/job/${jobId}/${doc.id}`;
           const to = data.phone;
           sendPromises.push(
             client.messages.create({
