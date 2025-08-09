@@ -7,7 +7,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Main />} />
-        <Route path="/job/:jobid" element={<Job />} />
+        <Route path="/job/:jobid/:respondentId" element={<Job />} />
       </Routes>
     </Router>
   );
