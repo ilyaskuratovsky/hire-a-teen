@@ -1,13 +1,13 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Main from "./Main";
-import Job from "./Job";
+import JobResponse from "./JobResponse";
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Main />} />
-        <Route path="/job/:jobid/:respondentId" element={<Job />} />
+        <Route path="/job/:jobid/:respondentId" element={<JobResponse />} />
       </Routes>
     </Router>
   );
