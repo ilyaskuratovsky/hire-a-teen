@@ -74,14 +74,13 @@ function JobResponse() {
     return (
       <div
         style={{
-          width: "100%",
           display: "flex",
-          padding: "20px",
           alignItems: "center",
           justifyContent: "center",
+          padding: 50,
         }}
       >
-        <p style={{ marginBottom: 10 }}>{confirmation}</p>
+        <p style={{}}>{confirmation}</p>
       </div>
     );
   }
@@ -89,55 +88,72 @@ function JobResponse() {
   return (
     <div
       style={{
-        width: "100%",
-        padding: "20px",
-        alignItems: "center",
-        justifyContent: "center",
         display: "flex",
         flexDirection: "column",
-        gap: "20px",
+        //backgroundColor: "orange",
       }}
     >
-      <Job type={job.type} address={job.address} notes={job.notes} />
+      <div
+        style={
+          {
+            //backgroundColor: "cyan"
+          }
+        }
+      >
+        <Job type={job.type} address={job.address} notes={job.notes} />
+      </div>
 
-      <div style={{ width: "90%", display: "flex", gap: "10px" }}>
-        <button
-          disabled={submitting}
+      <div
+        style={{
+          //backgroundColor: "blue",
+          paddingLeft: 16,
+          paddingRight: 16,
+        }}
+      >
+        <div
           style={{
-            flex: 1,
-            padding: "14px",
-            borderRadius: 8,
-            backgroundColor: "#28a745",
-            color: "#fff",
-            fontWeight: 600,
-            fontSize: 16,
-            border: "none",
-            cursor: submitting ? "not-allowed" : "pointer",
-            opacity: submitting ? 0.6 : 1,
+            display: "flex",
+            gap: "10px",
           }}
-          onClick={() => submitResponse("available")}
         >
-          I'm available for this job
-        </button>
+          <button
+            disabled={submitting}
+            style={{
+              flex: 1,
+              padding: "16px",
+              borderRadius: 8,
+              backgroundColor: "#28a745",
+              color: "#fff",
+              fontWeight: 600,
+              fontSize: 16,
+              border: "none",
+              cursor: submitting ? "not-allowed" : "pointer",
+              opacity: submitting ? 0.6 : 1,
+            }}
+            onClick={() => submitResponse("available")}
+          >
+            I'm available for this job
+          </button>
 
-        <button
-          disabled={submitting}
-          style={{
-            flex: 1,
-            padding: "14px",
-            borderRadius: 8,
-            backgroundColor: "#dc3545",
-            color: "#fff",
-            fontWeight: 600,
-            fontSize: 16,
-            border: "none",
-            cursor: submitting ? "not-allowed" : "pointer",
-            opacity: submitting ? 0.6 : 1,
-          }}
-          onClick={() => submitResponse("not available")}
-        >
-          I am NOT available
-        </button>
+          <button
+            disabled={submitting}
+            style={{
+              flex: 1,
+              padding: "14px",
+              borderRadius: 8,
+              backgroundColor: "#dc3545",
+              color: "#fff",
+              fontWeight: 600,
+              fontSize: 16,
+              border: "none",
+              cursor: submitting ? "not-allowed" : "pointer",
+              opacity: submitting ? 0.6 : 1,
+            }}
+            onClick={() => submitResponse("not available")}
+          >
+            I am NOT available
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -149,13 +165,13 @@ function Job({ type, notes, address, activityType }) {
   return (
     <div
       style={{
-        width: "90%", // take 90% of viewport width
-        maxWidth: 400, // but no wider than 400px
-        margin: "20px auto",
+        width: "100%",
+        //width: "95%", // take 90% of viewport width
+        //margin: "20px auto",
         padding: "16px",
         boxSizing: "border-box", // include padding in width calculation        borderRadius: 12,
         //boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
-        backgroundColor: "#fff",
+        //backgroundColor: "#fff",
         fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
       }}
     >
