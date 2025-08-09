@@ -87,10 +87,20 @@ function JobResponse() {
   }
 
   return (
-    <div style={{ width: "100%", padding: "20px" }}>
+    <div
+      style={{
+        width: "100%",
+        padding: "20px",
+        alignItems: "center",
+        justifyContent: "center",
+        display: "flex",
+        flexDirection: "column",
+        gap: "20px",
+      }}
+    >
       <Job type={job.type} address={job.address} notes={job.notes} />
 
-      <div style={{ display: "flex", gap: "10px" }}>
+      <div style={{ width: "90%", display: "flex", gap: "10px" }}>
         <button
           disabled={submitting}
           style={{
@@ -139,24 +149,25 @@ function Job({ type, notes, address, activityType }) {
   return (
     <div
       style={{
-        maxWidth: 400,
+        width: "90%", // take 90% of viewport width
+        maxWidth: 400, // but no wider than 400px
         margin: "20px auto",
-        padding: 16,
-        borderRadius: 12,
-        boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
+        padding: "16px",
+        boxSizing: "border-box", // include padding in width calculation        borderRadius: 12,
+        //boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
         backgroundColor: "#fff",
         fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
       }}
     >
       <h1
         style={{
-          fontSize: 28,
+          fontSize: 22,
           marginBottom: 20,
           color: "#222",
-          textAlign: "center",
+          textAlign: "left",
         }}
       >
-        Job Request
+        TeenHelper Job Request
       </h1>
 
       <div
