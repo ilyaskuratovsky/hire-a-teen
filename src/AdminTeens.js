@@ -14,10 +14,19 @@ export default function AdminTeens() {
         const q = query(teensRef, orderBy("createdAt", "desc"));
         const snapshot = await getDocs(q);
 
-        const rows = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
+        const rows = snapshot.docs.map((doc) => {
+          const data = doc.data();
+
+          return {
+            id: doc.id,
+            name: data.name || "",
+            email: data.email || "",
+            phone: data.phone || "",
+            school: data.school || "",
+            interests: data.interests || "",
+            createdAt: data.createdAt || null,
+          };
+        });
 
         setTeens(rows);
       } catch (err) {
@@ -51,14 +60,16 @@ export default function AdminTeens() {
               <th style={thStyle}>ID</th>
               <th style={thStyle}>Name</th>
               <th style={thStyle}>Email</th>
-              <th style={thStyle}>Message</th>
+              <th style={thStyle}>Phone</th>
+              <th style={thStyle}>School</th>
+              <th style={thStyle}>Interests</th>
               <th style={thStyle}>Created At</th>
             </tr>
           </thead>
           <tbody>
             {teens.length === 0 ? (
               <tr>
-                <td style={tdStyle} colSpan={5}>
+                <td style={tdStyle} colSpan={7}>
                   No teens found
                 </td>
               </tr>
@@ -66,9 +77,11 @@ export default function AdminTeens() {
               teens.map((teen) => (
                 <tr key={teen.id}>
                   <td style={tdStyle}>{teen.id}</td>
-                  <td style={tdStyle}>{teen.name || ""}</td>
-                  <td style={tdStyle}>{teen.email || ""}</td>
-                  <td style={tdStyle}>{teen.message || ""}</td>
+                  <td style={tdStyle}>{teen.name}</td>
+                  <td style={tdStyle}>{teen.email}</td>
+                  <td style={tdStyle}>{teen.phone}</td>
+                  <td style={tdStyle}>{teen.school}</td>
+                  <td style={tdStyle}>{teen.interests}</td>
                   <td style={tdStyle}>{formatFirestoreDate(teen.createdAt)}</td>
                 </tr>
               ))
