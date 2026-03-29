@@ -5,6 +5,7 @@ import twilio from "twilio";
 
 const db = getFirestore();
 
+/* fires when a new job is created by a customer */
 export const jobInsert = onDocumentCreated(
   {
     document: "jobs/{jobId}",
@@ -26,8 +27,10 @@ export const jobInsert = onDocumentCreated(
         accountSid,
         authToken,
         twilioNumber,
-      })
+      }),
     );
+
+    /** sends text messages to potential teen workers */
     try {
       const teensSnapshot = await db.collection("teens").get();
 
@@ -41,19 +44,20 @@ export const jobInsert = onDocumentCreated(
       teensSnapshot.forEach((doc) => {
         const data = doc.data();
         if (data.textMessagingStatus === "allowed" && data.phone) {
-          const message = `New TeenHelper Job Request (${jobData.type || "N/A"})\n\nDescription:\n${jobData.notes || ""}\n\nClick Link to Respond: https://www.teenhelper.com/#/job/${jobId}/${doc.id}`;
+          const address = removeHouseNumber(jobData.address || "N/A");
+          const message = `New TeenHelper Job Request (${jobData.type || "N/A"})\n\nAddress:${address}\nDescription:\n${jobData.notes || ""}\n\nClick Link to Respond: https://www.teenhelper.com/#/job/${jobId}/${doc.id}`;
           const to = data.phone;
           sendPromises.push(
             client.messages.create({
               body: message,
               from: twilioNumber,
               to,
-            })
+            }),
           );
           console.log(`📲 Sending SMS to ${data.phone}`);
         } else {
           console.log(
-            `❌ Skipping teen ${doc.id} - Text messaging not allowed or phone number missing.`
+            `❌ Skipping teen ${doc.id} - Text messaging not allowed or phone number missing.`,
           );
         }
       });
@@ -64,5 +68,21 @@ export const jobInsert = onDocumentCreated(
       console.error("❌ Failed to fetch teens or send SMS:", err);
     }
     return;
-  }
+  },
 );
+
+function removeHouseNumber(address: string): string {
+  const words = address.split(" ");
+  let result = "";
+
+  for (let i = 0; i < words.length; i++) {
+    if (words[i].match(/^[0-9]+$/)) {
+      // check if word is a house number
+      result += "* ".repeat(words[i].length); // replace with asterisks
+    } else {
+      result += words[i] + " ";
+    }
+  }
+
+  return result.trim();
+}

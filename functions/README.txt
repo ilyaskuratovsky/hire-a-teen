@@ -2,6 +2,8 @@
 firebase deploy --only functions --debug
 firebase deploy --only functions:myFunctionName --debug
 
+### examples
+firebase deploy --only functions:jobInsert --debug
 
 ### Run emulator
 npm run build

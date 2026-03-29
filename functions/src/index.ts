@@ -7,3 +7,4 @@ export { submitJob } from "./submitJob";
 export { jobInsert } from "./jobInsert";
 export { twilioStatusCallback } from "./twilioStatusCallback";
 export { teenJobResponse } from "./teenJobResponse";
+export { sendEmailToAdmins } from "./sendEmailToAdmins";
