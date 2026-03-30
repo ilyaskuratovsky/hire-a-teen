@@ -32,7 +32,18 @@ export default function AdminTeens() {
             createdAt: data.createdAt || null,
           };
         });
+        rows.sort((a, b) => {
+          const aAllowed = a.textMessagingStatus === "allowed" ? 1 : 0;
+          const bAllowed = b.textMessagingStatus === "allowed" ? 1 : 0;
 
+          if (aAllowed !== bAllowed) {
+            return bAllowed - aAllowed; // allowed first
+          }
+
+          // fallback: newest first
+          if (!a.createdAt || !b.createdAt) return 0;
+          return b.createdAt.seconds - a.createdAt.seconds;
+        });
         setTeens(rows);
       } catch (err) {
         console.error(err);

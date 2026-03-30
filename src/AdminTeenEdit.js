@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   getDoc,
   serverTimestamp,
@@ -41,6 +42,7 @@ export default function AdminTeenEdit() {
   const [form, setForm] = useState(EMPTY_FORM);
   const [loading, setLoading] = useState(!isNew);
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
@@ -146,6 +148,29 @@ export default function AdminTeenEdit() {
     }
   }
 
+  async function handleDelete() {
+    if (isNew) return;
+
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this teen?",
+    );
+    if (!confirmed) return;
+
+    try {
+      setDeleting(true);
+      setError("");
+      setSuccess("");
+
+      await deleteDoc(doc(db, "teens", teenId));
+      navigate("/admin/teens");
+    } catch (err) {
+      console.error(err);
+      setError("Failed to delete teen");
+    } finally {
+      setDeleting(false);
+    }
+  }
+
   if (loading) return <div>Loading teen...</div>;
 
   return (
@@ -238,15 +263,27 @@ export default function AdminTeenEdit() {
         {error && <p style={{ color: "red" }}>{error}</p>}
         {success && <p style={{ color: "green" }}>{success}</p>}
 
-        <button type="submit" disabled={saving}>
-          {saving
-            ? isNew
-              ? "Creating..."
-              : "Saving..."
-            : isNew
-              ? "Create"
-              : "Save"}
-        </button>
+        <div style={{ display: "flex", gap: "12px", marginTop: "16px" }}>
+          <button type="submit" disabled={saving || deleting}>
+            {saving
+              ? isNew
+                ? "Creating..."
+                : "Saving..."
+              : isNew
+                ? "Create"
+                : "Save"}
+          </button>
+
+          {!isNew && (
+            <button
+              type="button"
+              onClick={handleDelete}
+              disabled={saving || deleting}
+            >
+              {deleting ? "Deleting..." : "Delete"}
+            </button>
+          )}
+        </div>
       </form>
     </div>
   );
