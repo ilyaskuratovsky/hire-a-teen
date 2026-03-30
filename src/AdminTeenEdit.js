@@ -30,6 +30,7 @@ const EMPTY_FORM = {
   phone: "",
   school: "",
   interests: "",
+  notes: "",
   textMessagingStatus: "",
   interest_tags: [],
 };
@@ -71,6 +72,7 @@ export default function AdminTeenEdit() {
           phone: data.phone || "",
           school: data.school || "",
           interests: data.interests || "",
+          notes: data.notes || "",
           textMessagingStatus: data.textMessagingStatus || "",
           interest_tags: Array.isArray(data.interest_tags)
             ? data.interest_tags
@@ -122,6 +124,7 @@ export default function AdminTeenEdit() {
         phone: form.phone,
         school: form.school,
         interests: form.interests,
+        notes: form.notes,
         textMessagingStatus: form.textMessagingStatus,
         interest_tags: Array.isArray(form.interest_tags)
           ? form.interest_tags
@@ -220,6 +223,23 @@ export default function AdminTeenEdit() {
           <textarea
             name="interests"
             value={form.interests}
+            onChange={handleChange}
+            rows={4}
+            style={{
+              width: "100%",
+              padding: "10px",
+              border: "1px solid #ccc",
+              borderRadius: "4px",
+              resize: "vertical",
+              boxSizing: "border-box",
+            }}
+          />
+        </Field>
+
+        <Field label="Notes">
+          <textarea
+            name="notes"
+            value={form.notes}
             onChange={handleChange}
             rows={4}
             style={{

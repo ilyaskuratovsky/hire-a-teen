@@ -29,9 +29,11 @@ export default function AdminTeens() {
               ? data.interest_tags.join(", ")
               : "",
             textMessagingStatus: data.textMessagingStatus || "",
+            notes: data.notes || "",
             createdAt: data.createdAt || null,
           };
         });
+
         rows.sort((a, b) => {
           const aAllowed = a.textMessagingStatus === "allowed" ? 1 : 0;
           const bAllowed = b.textMessagingStatus === "allowed" ? 1 : 0;
@@ -44,6 +46,7 @@ export default function AdminTeens() {
           if (!a.createdAt || !b.createdAt) return 0;
           return b.createdAt.seconds - a.createdAt.seconds;
         });
+
         setTeens(rows);
       } catch (err) {
         console.error(err);
@@ -81,6 +84,7 @@ export default function AdminTeens() {
               <th style={thStyle}>Interests</th>
               <th style={thStyle}>Approved Interests</th>
               <th style={thStyle}>Text OK?</th>
+              <th style={thStyle}>Notes</th>
               <th style={thStyle}>Created At</th>
               <th style={thStyle}>Actions</th>
             </tr>
@@ -88,7 +92,7 @@ export default function AdminTeens() {
           <tbody>
             {teens.length === 0 ? (
               <tr>
-                <td style={tdStyle} colSpan={10}>
+                <td style={tdStyle} colSpan={11}>
                   No teens found
                 </td>
               </tr>
@@ -111,6 +115,7 @@ export default function AdminTeens() {
                     <td style={tdStyle}>{teen.interests}</td>
                     <td style={tdStyle}>{teen.approvedInterests}</td>
                     <td style={tdStyle}>{teen.textMessagingStatus}</td>
+                    <td style={tdStyle}>{teen.notes}</td>
                     <td style={tdStyle}>
                       {formatFirestoreDate(teen.createdAt)}
                     </td>
