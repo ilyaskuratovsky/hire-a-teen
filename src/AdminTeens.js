@@ -24,6 +24,10 @@ export default function AdminTeens() {
             phone: data.phone || "",
             school: data.school || "",
             interests: data.interests || "",
+            approvedInterests: Array.isArray(data.interest_tags)
+              ? data.interest_tags.join(", ")
+              : "",
+            textMessagingStatus: data.textMessagingStatus || "",
             createdAt: data.createdAt || null,
           };
         });
@@ -63,28 +67,43 @@ export default function AdminTeens() {
               <th style={thStyle}>Phone</th>
               <th style={thStyle}>School</th>
               <th style={thStyle}>Interests</th>
+              <th style={thStyle}>Approved Interests</th>
+              <th style={thStyle}>Text OK?</th>
               <th style={thStyle}>Created At</th>
             </tr>
           </thead>
           <tbody>
             {teens.length === 0 ? (
               <tr>
-                <td style={tdStyle} colSpan={7}>
+                <td style={tdStyle} colSpan={9}>
                   No teens found
                 </td>
               </tr>
             ) : (
-              teens.map((teen) => (
-                <tr key={teen.id}>
-                  <td style={tdStyle}>{teen.id}</td>
-                  <td style={tdStyle}>{teen.name}</td>
-                  <td style={tdStyle}>{teen.email}</td>
-                  <td style={tdStyle}>{teen.phone}</td>
-                  <td style={tdStyle}>{teen.school}</td>
-                  <td style={tdStyle}>{teen.interests}</td>
-                  <td style={tdStyle}>{formatFirestoreDate(teen.createdAt)}</td>
-                </tr>
-              ))
+              teens.map((teen) => {
+                const isAllowed = teen.textMessagingStatus === "allowed";
+
+                return (
+                  <tr
+                    key={teen.id}
+                    style={{
+                      backgroundColor: isAllowed ? "#d4edda" : "transparent",
+                    }}
+                  >
+                    <td style={tdStyle}>{teen.id}</td>
+                    <td style={tdStyle}>{teen.name}</td>
+                    <td style={tdStyle}>{teen.email}</td>
+                    <td style={tdStyle}>{teen.phone}</td>
+                    <td style={tdStyle}>{teen.school}</td>
+                    <td style={tdStyle}>{teen.interests}</td>
+                    <td style={tdStyle}>{teen.approvedInterests}</td>
+                    <td style={tdStyle}>{teen.textMessagingStatus}</td>
+                    <td style={tdStyle}>
+                      {formatFirestoreDate(teen.createdAt)}
+                    </td>
+                  </tr>
+                );
+              })
             )}
           </tbody>
         </table>
