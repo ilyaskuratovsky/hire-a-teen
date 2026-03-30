@@ -51,7 +51,7 @@ export default function AdminTeens() {
   return (
     <div>
       <h2>Teens</h2>
-
+      <Link to="/admin/teens/new">Create New Teen</Link>
       <div style={{ overflowX: "auto" }}>
         <table
           style={{

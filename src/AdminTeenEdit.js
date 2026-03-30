@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  serverTimestamp,
+  updateDoc,
+} from "firebase/firestore";
 import { db } from "./firebase";
 
 const ALL_TAGS = [
@@ -16,25 +23,34 @@ const ALL_TAGS = [
   "power_washing",
 ];
 
+const EMPTY_FORM = {
+  name: "",
+  email: "",
+  phone: "",
+  school: "",
+  interests: "",
+  textMessagingStatus: "",
+  interest_tags: [],
+};
+
 export default function AdminTeenEdit() {
   const { teenId } = useParams();
+  const navigate = useNavigate();
+  const isNew = teenId === "new";
 
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    school: "",
-    interests: "",
-    textMessagingStatus: "",
-    interest_tags: [],
-  });
-
-  const [loading, setLoading] = useState(true);
+  const [form, setForm] = useState(EMPTY_FORM);
+  const [loading, setLoading] = useState(!isNew);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
   useEffect(() => {
+    if (isNew) {
+      setForm(EMPTY_FORM);
+      setLoading(false);
+      return;
+    }
+
     async function fetchTeen() {
       try {
         const teenRef = doc(db, "teens", teenId);
@@ -67,7 +83,7 @@ export default function AdminTeenEdit() {
     }
 
     fetchTeen();
-  }, [teenId]);
+  }, [teenId, isNew]);
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -98,22 +114,33 @@ export default function AdminTeenEdit() {
       setError("");
       setSuccess("");
 
-      const teenRef = doc(db, "teens", teenId);
-
-      await updateDoc(teenRef, {
+      const payload = {
         name: form.name,
         email: form.email,
         phone: form.phone,
         school: form.school,
         interests: form.interests,
         textMessagingStatus: form.textMessagingStatus,
-        interest_tags: form.interest_tags,
-      });
+        interest_tags: Array.isArray(form.interest_tags)
+          ? form.interest_tags
+          : [],
+      };
 
+      if (isNew) {
+        const docRef = await addDoc(collection(db, "teens"), {
+          ...payload,
+          createdAt: serverTimestamp(),
+        });
+        navigate(`/admin/teens/${docRef.id}`);
+        return;
+      }
+
+      const teenRef = doc(db, "teens", teenId);
+      await updateDoc(teenRef, payload);
       setSuccess("Saved successfully");
     } catch (err) {
       console.error(err);
-      setError("Failed to save changes");
+      setError(isNew ? "Failed to create teen" : "Failed to save changes");
     } finally {
       setSaving(false);
     }
@@ -125,7 +152,7 @@ export default function AdminTeenEdit() {
     <div style={{ padding: "24px", maxWidth: "700px" }}>
       <Link to="/admin/teens">← Back</Link>
 
-      <h2>Edit Teen</h2>
+      <h2>{isNew ? "Create Teen" : "Edit Teen"}</h2>
 
       <form onSubmit={handleSubmit}>
         <Field label="Name">
@@ -180,6 +207,7 @@ export default function AdminTeenEdit() {
             }}
           />
         </Field>
+
         <Field label="Text Messaging Status">
           <select
             name="textMessagingStatus"
@@ -192,7 +220,6 @@ export default function AdminTeenEdit() {
           </select>
         </Field>
 
-        {/* ✅ Checkbox UI */}
         <Field label="Approved Interests">
           <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
             {ALL_TAGS.map((tag) => (
@@ -212,7 +239,13 @@ export default function AdminTeenEdit() {
         {success && <p style={{ color: "green" }}>{success}</p>}
 
         <button type="submit" disabled={saving}>
-          {saving ? "Saving..." : "Save"}
+          {saving
+            ? isNew
+              ? "Creating..."
+              : "Saving..."
+            : isNew
+              ? "Create"
+              : "Save"}
         </button>
       </form>
     </div>
