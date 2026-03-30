@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, Routes, Route, Navigate } from "react-router-dom";
 import AdminTeens from "./AdminTeens";
+import AdminTeenEdit from "./AdminTeenEdit";
 
 export default function AdminContent() {
   return (
@@ -14,6 +15,7 @@ export default function AdminContent() {
       <Routes>
         <Route index element={<Navigate to="teens" replace />} />
         <Route path="teens" element={<AdminTeens />} />
+        <Route path="teens/:teenId" element={<AdminTeenEdit />} />{" "}
       </Routes>
     </div>
   );

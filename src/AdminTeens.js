@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import { db } from "./firebase";
 
@@ -70,12 +71,13 @@ export default function AdminTeens() {
               <th style={thStyle}>Approved Interests</th>
               <th style={thStyle}>Text OK?</th>
               <th style={thStyle}>Created At</th>
+              <th style={thStyle}>Actions</th>
             </tr>
           </thead>
           <tbody>
             {teens.length === 0 ? (
               <tr>
-                <td style={tdStyle} colSpan={9}>
+                <td style={tdStyle} colSpan={10}>
                   No teens found
                 </td>
               </tr>
@@ -101,6 +103,14 @@ export default function AdminTeens() {
                     <td style={tdStyle}>
                       {formatFirestoreDate(teen.createdAt)}
                     </td>
+                    <td style={tdStyle}>
+                      <Link
+                        to={`/admin/teens/${teen.id}`}
+                        style={buttonLinkStyle}
+                      >
+                        Edit
+                      </Link>
+                    </td>
                   </tr>
                 );
               })
@@ -123,6 +133,16 @@ const tdStyle = {
   border: "1px solid #ccc",
   padding: "10px",
   verticalAlign: "top",
+};
+
+const buttonLinkStyle = {
+  display: "inline-block",
+  padding: "6px 10px",
+  border: "1px solid #ccc",
+  borderRadius: "4px",
+  textDecoration: "none",
+  color: "#000",
+  background: "#f5f5f5",
 };
 
 function formatFirestoreDate(value) {
