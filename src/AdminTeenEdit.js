@@ -13,15 +13,13 @@ import { db } from "./firebase";
 
 const ALL_TAGS = [
   "babysitting",
-  "pets",
+  "dog walking/pet sitting",
   "tutoring",
-  "sports",
-  "music",
-  "arts",
-  "yard_work",
-  "housework",
+  "private_lessons",
+  "yardwork_housework",
   "car_cleaning",
   "power_washing",
+  "all",
 ];
 
 const EMPTY_FORM = {
