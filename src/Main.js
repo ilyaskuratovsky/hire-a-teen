@@ -8,6 +8,40 @@ import BUTTONS from "./buttons.js"; // Import the buttons configuration
 import HowItWorks from "./HowItWorks.react.js";
 import Spinner from "./Spinner.react.js"; // Add this import at the top
 
+function getDynamicSeason(date = new Date()) {
+  const year = date.getFullYear();
+
+  // Approximate season start dates
+  const springStart = new Date(year, 2, 20); // March 20
+  const summerStart = new Date(year, 5, 21); // June 21
+  const fallStart = new Date(year, 8, 22); // September 22
+  const winterStart = new Date(year, 11, 21); // December 21
+
+  // Switch to the new season 15 days early
+  const springSwitch = new Date(springStart);
+  springSwitch.setDate(springSwitch.getDate() - 15);
+
+  const summerSwitch = new Date(summerStart);
+  summerSwitch.setDate(summerSwitch.getDate() - 15);
+
+  const fallSwitch = new Date(fallStart);
+  fallSwitch.setDate(fallSwitch.getDate() - 15);
+
+  const winterSwitch = new Date(winterStart);
+  winterSwitch.setDate(winterSwitch.getDate() - 15);
+
+  if (date >= winterSwitch || date < springSwitch) {
+    return "winter";
+  }
+  if (date >= springSwitch && date < summerSwitch) {
+    return "spring";
+  }
+  if (date >= summerSwitch && date < fallSwitch) {
+    return "summer";
+  }
+  return "fall";
+}
+
 function App() {
   const [showModal, setShowModal] = useState(false);
   const [activeForm, setActiveForm] = useState(null);
@@ -28,6 +62,8 @@ function App() {
   });
   const [teenSignupSent, setTeenSignupSent] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+
+  const season = getDynamicSeason();
 
   const handleOpenModal = (btn) => {
     setActiveForm(btn);
@@ -110,10 +146,10 @@ function App() {
         alert(
           "Failed to send signup: " +
             JSON.stringify(error) +
-            ". Please alert the administrator."
+            ". Please alert the administrator.",
         );
         setSubmitting(false); // Stop spinner
-      }
+      },
     );
   };
 
@@ -152,9 +188,9 @@ function App() {
         alert(
           "Failed to send signup: " +
             JSON.stringify(error) +
-            ". Please alert the administrator."
+            ". Please alert the administrator.",
         );
-      }
+      },
     );
 
     // Save to Firestore
@@ -190,7 +226,7 @@ function App() {
             textShadow: "0 2px 12px rgba(79,140,255,0.15)",
           }}
         >
-          Need a helping hand this summer? Hire a local Greenwich teen.
+          Need a helping hand this {season}? Hire a local Greenwich teen.
         </h1>
         <div
           style={{
@@ -308,7 +344,7 @@ function App() {
                 letterSpacing: 0.1,
               }}
             >
-              (Are you looking to work this summer?)
+              (Are you looking to work this {season}?)
             </span>
           </button>
         </div>
