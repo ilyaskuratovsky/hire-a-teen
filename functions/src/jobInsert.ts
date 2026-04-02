@@ -43,9 +43,9 @@ export const jobInsert = onDocumentCreated(
       teensSnapshot.forEach((doc) => {
         const data = doc.data();
         const teenApprovedInterests: string[] = Array.isArray(
-          data.approved_interests,
+          data.interest_tags,
         )
-          ? data.approved_interests
+          ? data.interest_tags
           : [];
 
         const hasMatchingInterest =
@@ -71,10 +71,12 @@ export const jobInsert = onDocumentCreated(
             }),
           );
 
-          console.log(`📲 Sending SMS to ${data.phone}`);
+          console.log(
+            `✅ Sending SMS to phone: ${to}, message: ${message} teen ${doc.id} - textMessagingStatus: ${data.textMessagingStatus}, phone: ${data.phone}, teenApprovedInterests: ${teenApprovedInterests}, jobInterests: ${jobInterests}`,
+          );
         } else {
           console.log(
-            `❌ Skipping teen ${doc.id} - Text messaging not allowed, phone missing, or no matching approved interests.`,
+            `❌ Skipping teen ${doc.id} - textMessagingStatus: ${data.textMessagingStatus}, phone: ${data.phone}, teenApprovedInterests: ${teenApprovedInterests}, jobInterests: ${jobInterests}`,
           );
         }
       });

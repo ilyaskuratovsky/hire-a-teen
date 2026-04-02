@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   HashRouter as Router,
   Routes,
@@ -11,10 +11,15 @@ import ProtectedRoute from "./ProtectedRoute";
 import AdminContent from "./AdminContent"; // Import the Admin component
 import Login from "./Login"; // Import the Login component
 function App() {
+  // Read query param from URL
+  const searchParams = new URLSearchParams(window.location.search);
+  const doNotSend = ["true", "1", "yes"].includes(
+    (searchParams.get("donotsend") || "").toLowerCase(),
+  );
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Main />} />
+        <Route path="/" element={<Main doNotSend={doNotSend} />} />
         <Route path="/job/:jobid/:respondentId" element={<JobResponse />} />
         <Route
           path="/admin/*"

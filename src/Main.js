@@ -42,7 +42,7 @@ function getDynamicSeason(date = new Date()) {
   return "fall";
 }
 
-function App() {
+function App({ doNotSend }) {
   const [showModal, setShowModal] = useState(false);
   const [activeForm, setActiveForm] = useState(null);
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -136,21 +136,27 @@ function App() {
     }
 
     // Send email as before
-    sendEmail(templateParams).then(
-      (result) => {
-        setShowModal(false);
-        setShowConfirmation(true);
-        setSubmitting(false); // Stop spinner
-      },
-      (error) => {
-        alert(
-          "Failed to send signup: " +
-            JSON.stringify(error) +
-            ". Please alert the administrator.",
-        );
-        setSubmitting(false); // Stop spinner
-      },
-    );
+    if (!doNotSend) {
+      sendEmail(templateParams).then(
+        (result) => {
+          setShowModal(false);
+          setShowConfirmation(true);
+          setSubmitting(false); // Stop spinner
+        },
+        (error) => {
+          alert(
+            "Failed to send signup: " +
+              JSON.stringify(error) +
+              ". Please alert the administrator.",
+          );
+          setSubmitting(false); // Stop spinner
+        },
+      );
+    } else {
+      setShowModal(false);
+      setShowConfirmation(true);
+      setSubmitting(false); // Stop spinner
+    }
   };
 
   const handleTeenSubmit = async (e) => {
