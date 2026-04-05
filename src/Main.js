@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { collection, addDoc } from "firebase/firestore";
 import db from "./firebase.js"; // Import your Firestore instance
 import { sendEmail } from "./EmailService.js";
@@ -43,6 +43,12 @@ function getDynamicSeason(date = new Date()) {
 }
 
 function App({ doNotSend }) {
+  useEffect(() => {
+    if (doNotSend) {
+      alert("do no send mode");
+    }
+  }, [doNotSend]);
+
   const [showModal, setShowModal] = useState(false);
   const [activeForm, setActiveForm] = useState(null);
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -92,26 +98,6 @@ function App({ doNotSend }) {
     e.preventDefault();
     setSubmitting(true); // Start spinner
 
-    const message = activeForm.formFields
-      .slice()
-      .sort((a, b) => a.order - b.order)
-      .map((field) => {
-        if (field.type === "date_time") {
-          const date = formValues[`${field.name}_date`] || "";
-          const start = formValues[`${field.name}_start`] || "";
-          const end = formValues[`${field.name}_end`] || "";
-          return `${field.label}: ${date} ${start ? "from " + start : ""}${end ? " to " + end : ""}`;
-        }
-        return `${field.label}: ${formValues[field.name] ? formValues[field.name] : ""}`;
-      })
-      .join("\n");
-
-    // Prepare template params for EmailJS
-    const templateParams = {
-      type: activeForm.title,
-      message,
-      ...formValues,
-    };
 
     // Prepare job data for API
     const jobData = {
@@ -137,6 +123,24 @@ function App({ doNotSend }) {
 
     // Send email as before
     if (!doNotSend) {
+    const message = activeForm.formFields
+      .slice()
+      .sort((a, b) => a.order - b.order)
+      .map((field) => {
+        if (field.type === "date_time") {
+          const date = formValues[`${field.name}_date`] || "";
+          const start = formValues[`${field.name}_start`] || "";
+          const end = formValues[`${field.name}_end`] || "";
+          return `${field.label}: ${date} ${start ? "from " + start : ""}${end ? " to " + end : ""}`;
+        }
+        return `${field.label}: ${formValues[field.name] ? formValues[field.name] : ""}`;
+      })
+      .join("\n");
+    const templateParams = {
+      type: activeForm.title,
+      message,
+      ...formValues,
+    };
       sendEmail(templateParams).then(
         (result) => {
           setShowModal(false);
@@ -153,6 +157,7 @@ function App({ doNotSend }) {
         },
       );
     } else {
+      alert('not sending email');
       setShowModal(false);
       setShowConfirmation(true);
       setSubmitting(false); // Stop spinner

@@ -1,13 +1,16 @@
 ### Deploy
 firebase deploy --only functions --debug
 firebase deploy --only functions:myFunctionName --debug
-
-### examples
+#examples:
 firebase deploy --only functions:jobInsert --debug
 
+
 ### Run emulator
+cd functions
 npm run build
-firebase emulators:start --only functions
+cd ..
+npm run emulators
+
 
 ### Set Twilio Auth
 firebase functions:config:set twilio.account_sid="YOUR_ACCOUNT_SID" twilio.auth_token="YOUR_AUTH_TOKEN" twilio.phone_number="YOUR_PHONE_NUMBER"

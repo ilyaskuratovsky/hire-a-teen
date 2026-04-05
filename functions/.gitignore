@@ -1,6 +1,8 @@
 # Compiled JavaScript files
 lib/**/*.js
 lib/**/*.js.map
+functions/lib/**/*.js
+functions/lib/**/*.js.map
 
 # TypeScript v1 declaration files
 typings/
@@ -8,5 +10,3 @@ typings/
 # Node.js dependency directory
 node_modules/
 *.local
-notes.txt
-*debug.log

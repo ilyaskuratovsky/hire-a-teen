@@ -1,9 +1,7 @@
-import React, { useState, useEffect } from "react";
 import {
   HashRouter as Router,
   Routes,
   Route,
-  Navigate,
 } from "react-router-dom";
 import Main from "./Main";
 import JobResponse from "./JobResponse";

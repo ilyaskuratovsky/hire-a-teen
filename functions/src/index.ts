@@ -5,6 +5,7 @@ initializeApp();
 
 export { submitJob } from "./submitJob";
 export { jobInsert } from "./jobInsert";
+export { jobInsertNotifyAdmins } from "./jobInsertNotifyAdmins";
 export { twilioStatusCallback } from "./twilioStatusCallback";
 export { teenJobResponse } from "./teenJobResponse";
 export { sendEmailToAdmins } from "./sendEmailToAdmins";
