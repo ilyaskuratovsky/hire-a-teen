@@ -17,7 +17,7 @@ const TWILIO_PHONE_NUMBER = defineSecret("TWILIO_PHONE_NUMBER");
 export const jobInsertNotifyAdmins = onDocumentCreated(
   {
     document: "jobs/{jobId}",
-    // secrets: [TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_PHONE_NUMBER],
+    secrets: [TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_PHONE_NUMBER],
   },
   async (event) => {
     console.log("jobInsertNotifyAdmins here");
