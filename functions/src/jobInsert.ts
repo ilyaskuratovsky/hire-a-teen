@@ -1,6 +1,7 @@
 import { getFirestore } from "firebase-admin/firestore";
 import { onDocumentCreated } from "firebase-functions/v2/firestore";
 import twilio from "twilio";
+import { getInterestsForJobType } from "./util/InterestUtils";
 
 const db = getFirestore();
 
@@ -38,7 +39,7 @@ export const jobInsert = onDocumentCreated(
       }
 
       const sendPromises: Promise<any>[] = [];
-      const jobInterests = getApprovedInterestsForJobType(jobData.type || "");
+      const jobInterests = getInterestsForJobType(jobData.type || "");
 
       teensSnapshot.forEach((doc) => {
         const data = doc.data();
@@ -91,33 +92,6 @@ export const jobInsert = onDocumentCreated(
   },
 );
 
-function getApprovedInterestsForJobType(jobType: string): string[] {
-  const normalizedJobType = jobType.toLowerCase();
-  /*
-    title: "Babysitting",
-    title: "Dog Walking/Pet Sitting",
-    title: "Academic Tutoring",
-    title: "Private Lessons",
-    title: "Yard Work",
-    title: "Housework",
-    title: "Car Cleaning",
-    title: "Power Washing",
-    title: "Other",
-  */
-  const jobTypeToInterestsMap: Record<string, string[]> = {
-    babysitting: ["babysitting"],
-    "dog walking/pet sitting": ["pets"],
-    "academic tutoring": ["tutoring"],
-    "private lessons": ["private_lessons"],
-    "yard work": ["yardwork_housework"],
-    housework: ["yardwork_housework"],
-    "car cleaning": ["car_cleaning"],
-    "power washing": ["power_washing"],
-    other: [],
-  };
-
-  return jobTypeToInterestsMap[normalizedJobType] || [];
-}
 
 function removeHouseNumber(address: string): string {
   const words = address.split(" ");

@@ -1,8 +1,10 @@
 ### Deploy
+npm install
 firebase deploy --only functions --debug
 firebase deploy --only functions:myFunctionName --debug
 #examples:
 firebase deploy --only functions:jobInsert --debug
+firebase deploy --only functions:jobInsertNotifyAdmins --debug
 
 
 ### Run emulator
