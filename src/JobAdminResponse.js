@@ -1,8 +1,9 @@
 import { useParams } from "react-router-dom";
-import { useEffect, useMemo, useState } from "react";
-import { collection, doc, getDoc, getDocs } from "firebase/firestore";
+import { useEffect, useMemo, useState, useCallback } from "react";
+import { collection, doc, getDoc, getDocs, query, documentId, where, addDoc } from "firebase/firestore";
 import db from "./firebase.js";
 import { getInterestsForJobType } from "./util/InterestUtils";
+import { removeHouseNumber } from "./util/AddressUtils";
 
 function JobAdminResponse() {
   const { jobid } = useParams();
@@ -49,13 +50,48 @@ function JobAdminResponse() {
     }));
   }
 
-  function handleNotifySelectedTeens() {
+  const handleNotifySelectedTeens = useCallback(async () => {
     // TODO: implement handler
+    const selectedTeenIdArray = Object.keys(selectedTeenIds).filter((id) => selectedTeenIds[id])
     console.log(
-      "Selected teen IDs:",
-      Object.keys(selectedTeenIds).filter((id) => selectedTeenIds[id]),
+      "Selected teen IDs: ", selectedTeenIdArray 
+      ,
     );
-  }
+
+    /** sends text messages to potential teen workers */
+      const q = query(
+        collection(db, "teens"),
+        where(documentId(), "in", selectedTeenIdArray),
+        
+      );
+
+      const teensSnapshot = await getDocs(q);
+
+      if (teensSnapshot.empty) {
+        console.log("No teens found.");
+        return;
+      }
+
+      teensSnapshot.forEach(async (doc) => {
+        const teen = doc.data(); 
+        const teenId = doc.id;
+        const address = removeHouseNumber(job.address || "N/A");
+        const message = `New TeenHelper Job Request (${job.type || "N/A"})\n\nAddress:${address}\nDescription:\n${job.notes || ""}\n\nClick Link to Respond: https://www.teenhelper.com/#/job/${job.id}/${teenId}`;
+        const to = teen.phone;
+
+        try {
+          const messageObject = {
+            message,
+            to,
+            createdAt: new Date(),
+          };
+
+          await addDoc(collection(db, "text_messages"), messageObject);
+        } catch (error) {
+          console.error("Error sending message to", to, ":", error);
+        }
+    });
+  }, [selectedTeenIds, job]);
 
   function hasInterest(teen, jobType) {
     const teenTags = teen.interest_tags;

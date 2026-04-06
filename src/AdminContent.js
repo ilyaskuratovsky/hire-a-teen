@@ -3,6 +3,7 @@ import { Link, Routes, Route, Navigate } from "react-router-dom";
 import AdminTeens from "./AdminTeens";
 import AdminTeenEdit from "./AdminTeenEdit";
 import AdminJobRequests from "./AdminJobRequests";
+import JobAdminResponse from "./JobAdminResponse";
 
 export default function AdminContent() {
   return (
@@ -19,6 +20,7 @@ export default function AdminContent() {
         <Route path="teens" element={<AdminTeens />} />
         <Route path="teens/:teenId" element={<AdminTeenEdit />} />
         <Route path="job-requests" element={<AdminJobRequests />} />
+        <Route path="adminjob/:jobid" element={<JobAdminResponse />} />
       </Routes>
     </div>
   );

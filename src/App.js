@@ -5,7 +5,6 @@ import {
 } from "react-router-dom";
 import Main from "./Main";
 import JobResponse from "./JobResponse";
-import JobAdminResponse from "./JobAdminResponse";
 import ProtectedRoute from "./ProtectedRoute";
 import AdminContent from "./AdminContent"; // Import the Admin component
 import Login from "./Login"; // Import the Login component
@@ -20,7 +19,6 @@ function App() {
       <Routes>
         <Route path="/" element={<Main doNotSend={doNotSend} />} />
         <Route path="/job/:jobid/:respondentId" element={<JobResponse />} />
-        <Route path="/adminjob/:jobid" element={<JobAdminResponse />} />
         <Route
           path="/admin/*"
           element={
