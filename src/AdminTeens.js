@@ -1,18 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { collection, getDocs, orderBy, query } from "firebase/firestore";
+import { collection, getDocs, query } from "firebase/firestore";
 import { db } from "./firebase";
 
 export default function AdminTeens() {
   const [teens, setTeens] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [sortConfig, setSortConfig] = useState({
+    key: "createdAt",
+    direction: "desc",
+  });
 
   useEffect(() => {
     async function fetchTeens() {
       try {
         const teensRef = collection(db, "teens");
-        const q = query(teensRef, orderBy("createdAt", "desc"));
+        const q = query(teensRef);
         const snapshot = await getDocs(q);
 
         const rows = snapshot.docs.map((doc) => {
@@ -34,19 +38,6 @@ export default function AdminTeens() {
           };
         });
 
-        rows.sort((a, b) => {
-          const aAllowed = a.textMessagingStatus === "allowed" ? 1 : 0;
-          const bAllowed = b.textMessagingStatus === "allowed" ? 1 : 0;
-
-          if (aAllowed !== bAllowed) {
-            return bAllowed - aAllowed; // allowed first
-          }
-
-          // fallback: newest first
-          if (!a.createdAt || !b.createdAt) return 0;
-          return b.createdAt.seconds - a.createdAt.seconds;
-        });
-
         setTeens(rows);
       } catch (err) {
         console.error(err);
@@ -58,6 +49,53 @@ export default function AdminTeens() {
 
     fetchTeens();
   }, []);
+
+  function handleSort(key) {
+    setSortConfig((current) => {
+      if (current.key === key) {
+        return {
+          key,
+          direction: current.direction === "asc" ? "desc" : "asc",
+        };
+      }
+      return { key, direction: "asc" };
+    });
+  }
+
+  function getSortableValue(teen, key) {
+    const value = teen[key];
+
+    if (key === "createdAt") {
+      if (!value) return 0;
+      if (typeof value?.toDate === "function") return value.toDate().getTime();
+      if (value?.seconds) return value.seconds * 1000;
+      return 0;
+    }
+
+    if (key === "textMessagingStatus") {
+      return String(value || "").toLowerCase();
+    }
+
+    return String(value || "").toLowerCase();
+  }
+
+  const sortedTeens = useMemo(() => {
+    const sorted = [...teens].sort((a, b) => {
+      const aValue = getSortableValue(a, sortConfig.key);
+      const bValue = getSortableValue(b, sortConfig.key);
+
+      if (aValue < bValue) return sortConfig.direction === "asc" ? -1 : 1;
+      if (aValue > bValue) return sortConfig.direction === "asc" ? 1 : -1;
+      return 0;
+    });
+
+    return sorted;
+  }, [teens, sortConfig]);
+
+  function renderSortArrow(key) {
+    if (sortConfig.key !== key) return "↕";
+    return sortConfig.direction === "asc" ? "↑" : "↓";
+  }
 
   if (loading) return <div>Loading teens...</div>;
   if (error) return <div>{error}</div>;
@@ -76,28 +114,43 @@ export default function AdminTeens() {
         >
           <thead>
             <tr>
-              <th style={thStyle}>ID</th>
-              <th style={thStyle}>Name</th>
-              <th style={thStyle}>Email</th>
-              <th style={thStyle}>Phone</th>
-              <th style={thStyle}>School</th>
-              <th style={thStyle}>Interests</th>
-              <th style={thStyle}>Approved Interests</th>
-              <th style={thStyle}>Text OK?</th>
-              <th style={thStyle}>Notes</th>
-              <th style={thStyle}>Created At</th>
+              <SortableTh label="ID" column="id" onSort={handleSort} renderSortArrow={renderSortArrow} />
+              <SortableTh label="Name" column="name" onSort={handleSort} renderSortArrow={renderSortArrow} />
+              <SortableTh label="Email" column="email" onSort={handleSort} renderSortArrow={renderSortArrow} />
+              <SortableTh label="Phone" column="phone" onSort={handleSort} renderSortArrow={renderSortArrow} />
+              <SortableTh label="School" column="school" onSort={handleSort} renderSortArrow={renderSortArrow} />
+              <SortableTh label="Interests" column="interests" onSort={handleSort} renderSortArrow={renderSortArrow} />
+              <SortableTh
+                label="Approved Interests"
+                column="approvedInterests"
+                onSort={handleSort}
+                renderSortArrow={renderSortArrow}
+              />
+              <SortableTh
+                label="Text OK?"
+                column="textMessagingStatus"
+                onSort={handleSort}
+                renderSortArrow={renderSortArrow}
+              />
+              <SortableTh label="Notes" column="notes" onSort={handleSort} renderSortArrow={renderSortArrow} />
+              <SortableTh
+                label="Created At"
+                column="createdAt"
+                onSort={handleSort}
+                renderSortArrow={renderSortArrow}
+              />
               <th style={thStyle}>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {teens.length === 0 ? (
+            {sortedTeens.length === 0 ? (
               <tr>
                 <td style={tdStyle} colSpan={11}>
                   No teens found
                 </td>
               </tr>
             ) : (
-              teens.map((teen) => {
+              sortedTeens.map((teen) => {
                 const isAllowed = teen.textMessagingStatus === "allowed";
 
                 return (
@@ -116,9 +169,7 @@ export default function AdminTeens() {
                     <td style={tdStyle}>{teen.approvedInterests}</td>
                     <td style={tdStyle}>{teen.textMessagingStatus}</td>
                     <td style={tdStyle}>{teen.notes}</td>
-                    <td style={tdStyle}>
-                      {formatFirestoreDate(teen.createdAt)}
-                    </td>
+                    <td style={tdStyle}>{formatFirestoreDate(teen.createdAt)}</td>
                     <td style={tdStyle}>
                       <Link
                         to={`/admin/teens/${teen.id}`}
@@ -135,6 +186,17 @@ export default function AdminTeens() {
         </table>
       </div>
     </div>
+  );
+}
+
+function SortableTh({ label, column, onSort, renderSortArrow }) {
+  return (
+    <th
+      style={{ ...thStyle, cursor: "pointer", userSelect: "none" }}
+      onClick={() => onSort(column)}
+    >
+      {label} {renderSortArrow(column)}
+    </th>
   );
 }
 
