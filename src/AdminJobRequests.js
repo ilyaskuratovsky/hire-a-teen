@@ -75,6 +75,7 @@ export default function AdminJobRequests() {
               <th style={thStyle}>Type</th>
               <th style={thStyle}>Preferred Contact</th>
               <th style={thStyle}>Notes</th>
+              <th style={thStyle}>Admin</th>
             </tr>
           </thead>
           <tbody>
@@ -96,6 +97,9 @@ export default function AdminJobRequests() {
                   <td style={tdStyle}>{job.type}</td>
                   <td style={tdStyle}>{job.preferredContact}</td>
                   <td style={tdStyle}>{job.notes}</td>
+                  <td style={tdStyle}>
+                    <a href={`/#/admin/adminjob/${job.id}`}>Admin</a>
+                  </td>
                 </tr>
               ))
             )}

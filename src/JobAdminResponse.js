@@ -1,6 +1,18 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useMemo, useState, useCallback } from "react";
-import { collection, doc, getDoc, getDocs, query, documentId, where, addDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  documentId,
+  where,
+  addDoc,
+  arrayUnion,
+  updateDoc,
+} from "firebase/firestore";
+
 import db from "./firebase.js";
 import { getInterestsForJobType } from "./util/InterestUtils";
 import { removeHouseNumber } from "./util/AddressUtils";
@@ -8,10 +20,24 @@ import { removeHouseNumber } from "./util/AddressUtils";
 function JobAdminResponse() {
   const { jobid } = useParams();
   const [job, setJob] = useState(null);
+  const [jobAdminResponse, setJobAdminResponse] = useState(null);
   const [teens, setTeens] = useState([]);
   const [selectedTeenIds, setSelectedTeenIds] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const fetchJobAdminResponse = useCallback(async () => {
+    const jobAdminResponseQuery = query(
+      collection(db, "job_admin_responses"),
+      where("jobId", "==", jobid),
+    );
+
+    const snapshot = await getDocs(jobAdminResponseQuery);
+    const firstMatch = snapshot.docs[0];
+
+    setJobAdminResponse(
+      firstMatch ? { id: firstMatch.id, ...firstMatch.data() } : null,
+    );
+  }, [setJobAdminResponse, jobid]);
 
   useEffect(() => {
     async function fetchData() {
@@ -24,15 +50,17 @@ function JobAdminResponse() {
           return;
         }
 
-        setJob({ id: docJobSnap.id, ...docJobSnap.data() });
+        const jobData = { id: docJobSnap.id, ...docJobSnap.data() };
+        setJob(jobData);
 
         const teensSnapshot = await getDocs(collection(db, "teens"));
         const teensList = teensSnapshot.docs.map((teenDoc) => ({
           id: teenDoc.id,
           ...teenDoc.data(),
         }));
-
         setTeens(teensList);
+
+        await fetchJobAdminResponse();
       } catch (err) {
         setError("Failed to fetch data: " + err.message);
       } finally {
@@ -41,7 +69,7 @@ function JobAdminResponse() {
     }
 
     fetchData();
-  }, [jobid]);
+  }, [jobid, fetchJobAdminResponse]);
 
   function toggleTeenSelection(teenId) {
     setSelectedTeenIds((prev) => ({
@@ -51,47 +79,66 @@ function JobAdminResponse() {
   }
 
   const handleNotifySelectedTeens = useCallback(async () => {
-    // TODO: implement handler
-    const selectedTeenIdArray = Object.keys(selectedTeenIds).filter((id) => selectedTeenIds[id])
-    console.log(
-      "Selected teen IDs: ", selectedTeenIdArray 
-      ,
+    const selectedTeenIdArray = Object.keys(selectedTeenIds).filter(
+      (id) => selectedTeenIds[id],
     );
 
-    /** sends text messages to potential teen workers */
-      const q = query(
-        collection(db, "teens"),
-        where(documentId(), "in", selectedTeenIdArray),
-        
-      );
+    console.log("Selected teen IDs: ", selectedTeenIdArray);
 
-      const teensSnapshot = await getDocs(q);
+    if (selectedTeenIdArray.length === 0) {
+      return;
+    }
 
-      if (teensSnapshot.empty) {
-        console.log("No teens found.");
-        return;
+    const q = query(
+      collection(db, "teens"),
+      where(documentId(), "in", selectedTeenIdArray),
+    );
+
+    const teensSnapshot = await getDocs(q);
+
+    if (teensSnapshot.empty) {
+      console.log("No teens found.");
+      return;
+    }
+
+    teensSnapshot.forEach(async (docSnap) => {
+      const teen = docSnap.data();
+      const teenId = docSnap.id;
+      const address = removeHouseNumber(job.address || "N/A");
+
+      const message = `New TeenHelper Job Request (${job.type || "N/A"})\n\nAddress:${address}\nDescription:\n${job.notes || ""}\n\nClick Link to Respond: https://www.teenhelper.com/#/job/${job.id}/${teenId}`;
+
+      const to = teen.phone;
+
+      try {
+        const messageObject = {
+          message,
+          to,
+          createdAt: new Date(),
+        };
+
+        // ✅ Create text_message and get ID
+        const docRef = await addDoc(
+          collection(db, "text_messages"),
+          messageObject,
+        );
+        const textMessageId = docRef.id;
+
+        // ✅ Update job_admin_responses actions array
+        await updateDoc(doc(db, "job_admin_responses", jobAdminResponse.id), {
+          actions: arrayUnion({
+            teenId,
+            type: "text_message",
+            textMessageId,
+          }),
+        });
+      } catch (error) {
+        console.error("Error sending message to", to, ":", error);
       }
-
-      teensSnapshot.forEach(async (doc) => {
-        const teen = doc.data(); 
-        const teenId = doc.id;
-        const address = removeHouseNumber(job.address || "N/A");
-        const message = `New TeenHelper Job Request (${job.type || "N/A"})\n\nAddress:${address}\nDescription:\n${job.notes || ""}\n\nClick Link to Respond: https://www.teenhelper.com/#/job/${job.id}/${teenId}`;
-        const to = teen.phone;
-
-        try {
-          const messageObject = {
-            message,
-            to,
-            createdAt: new Date(),
-          };
-
-          await addDoc(collection(db, "text_messages"), messageObject);
-        } catch (error) {
-          console.error("Error sending message to", to, ":", error);
-        }
+      await fetchJobAdminResponse();
+      alert("Text messages sent successfully!");
     });
-  }, [selectedTeenIds, job]);
+  }, [selectedTeenIds, job, jobAdminResponse, fetchJobAdminResponse]);
 
   function hasInterest(teen, jobType) {
     const teenTags = teen.interest_tags;
@@ -115,6 +162,14 @@ function JobAdminResponse() {
   }
 
   const groupedTeens = useMemo(() => {
+    if (!job) {
+      return {
+        allowedMatchingInterest: [],
+        allowedNoMatchingInterest: [],
+        textingNotAllowed: [],
+      };
+    }
+
     const allowedMatchingInterest = [];
     const allowedNoMatchingInterest = [];
     const textingNotAllowed = [];
@@ -176,6 +231,7 @@ function JobAdminResponse() {
           title="1. Matching Interests"
           teens={groupedTeens.allowedMatchingInterest}
           selectedTeenIds={selectedTeenIds}
+          jobAdminResponse={jobAdminResponse}
           onToggleTeen={toggleTeenSelection}
         />
 
@@ -183,8 +239,10 @@ function JobAdminResponse() {
           title="2. Not Matching"
           teens={groupedTeens.allowedNoMatchingInterest}
           selectedTeenIds={selectedTeenIds}
+          jobAdminResponse={jobAdminResponse}
           onToggleTeen={toggleTeenSelection}
         />
+
         <button
           onClick={handleNotifySelectedTeens}
           style={{
@@ -208,6 +266,7 @@ function JobAdminResponse() {
           teens={groupedTeens.textingNotAllowed}
           selectedTeenIds={selectedTeenIds}
           onToggleTeen={toggleTeenSelection}
+          jobAdminResponse={jobAdminResponse}
         />
       </div>
     </div>
@@ -216,7 +275,28 @@ function JobAdminResponse() {
 
 export default JobAdminResponse;
 
-function TeenGroup({ title, teens, selectedTeenIds, onToggleTeen }) {
+function TeenGroup({
+  title,
+  teens,
+  selectedTeenIds,
+  onToggleTeen,
+  jobAdminResponse,
+}) {
+  function getTeenActions(teenId) {
+    const actions = jobAdminResponse?.actions;
+
+    if (!Array.isArray(actions)) {
+      return [];
+    }
+
+    return actions.filter((record) => record?.teenId === teenId);
+  }
+  function actionToString(action) {
+    if (action === "text_message") {
+      return "Text Message Sent";
+    }
+    return action;
+  }
   return (
     <div style={{ marginBottom: 24 }}>
       <h3
@@ -246,6 +326,8 @@ function TeenGroup({ title, teens, selectedTeenIds, onToggleTeen }) {
               teen.firstName ||
               teen.phone ||
               teen.id;
+
+            const teenActions = getTeenActions(teen.id);
 
             return (
               <label
@@ -281,6 +363,31 @@ function TeenGroup({ title, teens, selectedTeenIds, onToggleTeen }) {
                       interest_tags: {teen.interest_tags.join(", ")}
                     </span>
                   )}
+                  {teenActions.length > 0 ? (
+                    <div style={{ marginTop: 4 }}>
+                      {teenActions.map((action, index) => (
+                        <span
+                          key={`${teen.id}-${index}`}
+                          style={{
+                            fontSize: 13,
+                            color: "#007bff",
+                            fontWeight: 500,
+                            display: "block",
+                          }}
+                        >
+                          {actionToString(action.type)}
+                        </span>
+                      ))}
+                    </div>
+                  ) : (
+                    <span
+                      style={{
+                        fontSize: 13,
+                        color: "#999",
+                        fontWeight: 500,
+                      }}
+                    ></span>
+                  )}{" "}
                 </div>
               </label>
             );
