@@ -42,7 +42,7 @@ async function sendNewJobRequestToAdmins(
   jobData: FirestoreJobRequest,
 ): Promise<void> {
   const address = jobData.address || "N/A";
-  const message = `New TeenHelper Job Request (${jobData.type || "N/A"})\n\nAddress:${address}\nDescription:\n${jobData.notes || ""}\n\nhttps://www.teenhelper.com/#/adminjob/${jobData.id}`;
+  const message = `New TeenHelper Job Request (${jobData.type || "N/A"})\n\nAddress:${address}\nDescription:\n${jobData.notes || ""}\n\nhttps://www.teenhelper.com/#/admin/adminjob/${jobData.id}`;
 
   const adminsSnapshot = await db
     .collection("admins")
