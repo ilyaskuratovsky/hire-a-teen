@@ -10,3 +10,4 @@ export { jobInsertNotifyAdmins } from "./jobInsertNotifyAdmins";
 export { twilioStatusCallback } from "./twilioStatusCallback";
 export { teenJobResponse } from "./teenJobResponse";
 export { sendEmailToAdmins } from "./sendEmailToAdmins";
+export { textMessageInsert } from "./textMessageInsert";
