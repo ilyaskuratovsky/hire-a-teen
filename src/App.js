@@ -7,7 +7,8 @@ import Main from "./Main";
 import JobResponse from "./JobResponse";
 import ProtectedRoute from "./ProtectedRoute";
 import AdminContent from "./AdminContent"; // Import the Admin component
-import Login from "./Login"; // Import the Login component
+import AdminLogin from "./AdminLogin"; // Import the Login component
+import AuthPage from "./AuthPage.react"; // Import the AuthPage component
 function App() {
   // Read query param from URL
   const searchParams = new URLSearchParams(window.location.search);
@@ -27,7 +28,8 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="/login" element={<Login />} />
+        <Route path="/adminlogin" element={<AdminLogin />} />
+        <Route path="/login" element={<AuthPage />} />
       </Routes>
     </Router>
   );

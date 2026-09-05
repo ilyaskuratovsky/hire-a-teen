@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom"; // <-- Added this import
 import { collection, addDoc } from "firebase/firestore";
 import db from "./firebase.js"; // Import your Firestore instance
 import { sendEmail } from "./EmailService.js";
@@ -388,6 +389,17 @@ function App({ doNotSend }) {
           >
             About
           </a>
+          {" | "}
+          <Link
+            to="/login"
+            style={{
+              color: "#4ea1ff",
+              textDecoration: "underline",
+              cursor: "pointer",
+            }}
+          >
+            Sign In
+          </Link>
         </div>
       </header>
       {showModal && activeForm && (
@@ -931,9 +943,9 @@ function App({ doNotSend }) {
                   <div
                     style={{
                       display: "flex",
-                      gap: 16,
+                      gap: 20,
+                      marginTop: 24,
                       justifyContent: "center",
-                      marginTop: 18,
                     }}
                   >
                     <button
@@ -947,9 +959,8 @@ function App({ doNotSend }) {
                         padding: "10px 28px",
                         border: "none",
                         borderRadius: 16,
-                        boxShadow: "0 1px 4px rgba(183,18,52,0.10)",
-                        cursor: isTeenFormValid ? "pointer" : "not-allowed",
-                        transition: "background 0.2s, transform 0.1s",
+                        boxShadow: "0 1px 4px rgba(0,0,0,0.1)",
+                        cursor: isTeenFormValid ? "pointer" : "default",
                       }}
                     >
                       Submit
@@ -958,19 +969,18 @@ function App({ doNotSend }) {
                       type="button"
                       onClick={() => setShowTeenSignup(false)}
                       style={{
-                        background: "#e6e7e8",
-                        color: "#231f20",
+                        background: "#ff6a6a",
+                        color: "#fff",
                         fontWeight: "bold",
                         fontSize: 17,
                         padding: "10px 28px",
                         border: "none",
                         borderRadius: 16,
-                        boxShadow: "0 1px 4px rgba(35,31,32,0.10)",
+                        boxShadow: "0 1px 4px rgba(0,0,0,0.1)",
                         cursor: "pointer",
-                        transition: "background 0.2s, transform 0.1s",
                       }}
                     >
-                      Cancel
+                      Close
                     </button>
                   </div>
                 </form>
