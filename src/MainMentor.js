@@ -352,14 +352,14 @@ function MainMentor({ doNotSend = false }) {
           <h2 style={styles.sectionTitle}>Ways to Get in Touch</h2>
 
           <div style={styles.mobileContactList}>
-            <a href="tel:+12039121799" style={styles.mobileContactRow}>
+            <a href="tel:+12039694261" style={styles.mobileContactRow}>
               <div style={styles.contactLeft}>
                 <Icon type="message" size={32} />
 
                 <div>
                   <div style={styles.contactTitle}>Text or Call</div>
 
-                  <div style={styles.contactLink}>(203) 912-1799</div>
+                  <div style={styles.contactLink}>(203) 969-4261</div>
                 </div>
               </div>
 
@@ -451,13 +451,13 @@ function MainMentor({ doNotSend = false }) {
             </div>
 
             <div style={styles.contactChoices}>
-              <a href="tel:+12039121799" style={styles.contactChoice}>
+              <a href="tel:+12039694261" style={styles.contactChoice}>
                 <Icon type="message" size={34} />
 
                 <div>
                   <div style={styles.choiceTitle}>Text or Call</div>
 
-                  <div style={styles.choiceLink}>(203) 912-1799</div>
+                  <div style={styles.choiceLink}>(203) 969-4261</div>
                 </div>
               </a>
 
