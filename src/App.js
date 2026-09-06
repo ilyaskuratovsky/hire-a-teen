@@ -4,6 +4,7 @@ import {
   Route,
 } from "react-router-dom";
 import Main from "./Main";
+import MainMentor from "./MainMentor";
 import JobResponse from "./JobResponse";
 import ProtectedRoute from "./ProtectedRoute";
 import AdminContent from "./AdminContent"; // Import the Admin component
@@ -19,6 +20,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Main doNotSend={doNotSend} />} />
+        <Route path="/mentor" element={<MainMentor />} />
         <Route path="/job/:jobid/:respondentId" element={<JobResponse />} />
         <Route
           path="/admin/*"
