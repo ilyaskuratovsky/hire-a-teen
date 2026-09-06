@@ -19,8 +19,8 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Main doNotSend={doNotSend} />} />
-        <Route path="/mentor" element={<MainMentor />} />
+        <Route path="/prev" element={<Main doNotSend={doNotSend} />} />
+        <Route path="/" element={<MainMentor />} />
         <Route path="/job/:jobid/:respondentId" element={<JobResponse />} />
         <Route
           path="/admin/*"
