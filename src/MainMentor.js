@@ -289,7 +289,7 @@ function MainMentor({ doNotSend = false }) {
         <section style={styles.samSection}>
           <div style={styles.samTopRow}>
             <img
-              src="./sam.png"
+              src="./sam_basketball.png"
               alt="Sam, founder of TeenHelper"
               style={styles.samPhoto}
             />
